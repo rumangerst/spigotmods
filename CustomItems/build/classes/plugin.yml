@@ -1,0 +1,10 @@
+name: CustomItems
+main: io.github.rumangerst.customitems.CustomItemsPlugin
+version: 1.0
+commands:
+    citems:
+        description: List or give custom items
+        usage: |
+           /citems list
+           /citems give [id] [amount]
+           /citems giveto [player] [id] [amount]

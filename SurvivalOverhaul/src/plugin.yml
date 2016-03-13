@@ -1,0 +1,4 @@
+name: SurvivalOverhaul
+main: io.github.rumangerst.survivaloverhaul.SurvivalOverhaulPlugin
+version: 1.0
+depend: [BountifulAPI,CustomItems]

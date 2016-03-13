@@ -1,0 +1,4 @@
+name: MMOOre
+main: io.github.rumangerst.mmoore.MMOOrePlugin
+version: 1.0
+depend: [BountifulAPI,CustomItems]

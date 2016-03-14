@@ -8,3 +8,7 @@ commands:
            /citems list
            /citems give [id] [amount]
            /citems giveto [player] [id] [amount]
+           
+    cigive:
+        description: Shows a GUI where you can give custom items to you
+        usage: /cigive

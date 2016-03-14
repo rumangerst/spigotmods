@@ -6,11 +6,11 @@
 package io.github.rumangerst.customitems.nbt;
 
 import java.util.List;
-import net.minecraft.server.v1_8_R3.ItemStack;
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
-import net.minecraft.server.v1_8_R3.NBTTagList;
-import net.minecraft.server.v1_8_R3.NBTTagString;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import net.minecraft.server.v1_9_R1.ItemStack;
+import net.minecraft.server.v1_9_R1.NBTTagCompound;
+import net.minecraft.server.v1_9_R1.NBTTagList;
+import net.minecraft.server.v1_9_R1.NBTTagString;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;

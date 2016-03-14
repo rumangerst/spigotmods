@@ -12,8 +12,6 @@ import io.github.rumangerst.customitems.recipes.impl.CustomItemRecipeImpl;
 import io.github.rumangerst.customitems.recipes.impl.ShapelessCustomItemRecipeImpl;
 import java.util.ArrayList;
 import java.util.List;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
-import org.bukkit.inventory.ItemStack;
 
 /**
  *

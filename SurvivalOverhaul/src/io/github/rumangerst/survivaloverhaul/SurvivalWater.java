@@ -267,8 +267,8 @@ public class SurvivalWater implements Listener
         NBTAPI.setLong(player.getItemInHand(), "survival_water_hot", System.currentTimeMillis() + WATER_HEAT_PERSISTENCE); //Water is 10 min hot
         player.sendMessage("Du hast das Wasser erhitzt. Es ist für 10min heiß.");
 
-        player.playSound(player.getLocation(), Sound.GHAST_FIREBALL, 0.5f, 0.2f);
-        player.playSound(player.getLocation(), Sound.FIZZ, 0.5f, 0.2f);
+        player.playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 0.5f, 0.2f);
+        player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.5f, 0.2f);
     }
     
     private void filterWaterWithGravel(Player player, SurvivalWaterPotion potion, Block target)
@@ -298,7 +298,7 @@ public class SurvivalWater implements Listener
 
         }
 
-        player.playSound(player.getLocation(), Sound.WATER, 0.5f, 1);
+        player.playSound(player.getLocation(), Sound.BLOCK_WATER_AMBIENT, 0.5f, 1);
     }
     
     private void filterWaterWithSand(Player player, SurvivalWaterPotion potion, Block target)
@@ -328,7 +328,7 @@ public class SurvivalWater implements Listener
 
         }
 
-        player.playSound(player.getLocation(), Sound.WATER, 0.5f, 1);
+        player.playSound(player.getLocation(), Sound.BLOCK_WATER_AMBIENT, 0.5f, 1);
     }
     
     @EventHandler
@@ -441,8 +441,8 @@ public class SurvivalWater implements Listener
             {
                 if(p != null && event.getPlayer().isSneaking())
                 {
-                    event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.SPLASH, 0.2f, 1);
-                    event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.DRINK, 1, 1);
+                    event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ENTITY_GENERIC_SPLASH, 0.2f, 1);
+                    event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ENTITY_GENERIC_DRINK, 1, 1);
                     
                     //Apply now
                     p.applyTo(event.getPlayer());

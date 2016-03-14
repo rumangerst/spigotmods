@@ -1,0 +1,4 @@
+name: CrystallMagic
+main: io.github.rumangerst.crystallmagic.CrystallMagicPlugin
+version: 1.0
+depend: [BountifulAPI,CustomItems]

@@ -424,23 +424,23 @@ public class TieredSmity implements Listener
         }
         else if (durability < 0.6)
         {
-            stack.addEnchantment(Enchantment.DURABILITY, 1);
+            stack.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
         }
         else if (durability < 0.7)
         {
-            stack.addEnchantment(Enchantment.DURABILITY, 2);
+            stack.addUnsafeEnchantment(Enchantment.DURABILITY, 2);
         }
         else if (durability < 0.8)
         {
-            stack.addEnchantment(Enchantment.DURABILITY, 3);
+            stack.addUnsafeEnchantment(Enchantment.DURABILITY, 3);
         }
         else if (durability < 0.9)
         {
-            stack.addEnchantment(Enchantment.DURABILITY, 4);
+            stack.addUnsafeEnchantment(Enchantment.DURABILITY, 4);
         }
         else
         {
-            stack.addEnchantment(Enchantment.DURABILITY, 5);
+            stack.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
         }
     }
     
@@ -452,15 +452,15 @@ public class TieredSmity implements Listener
         }      
         else if (precision < 0.7)
         {
-            stack.addEnchantment(Enchantment.LUCK, 1);
+            stack.addUnsafeEnchantment(Enchantment.LUCK, 1);
         }       
         else if (precision < 0.9)
         {
-            stack.addEnchantment(Enchantment.LUCK, 2);
+            stack.addUnsafeEnchantment(Enchantment.LUCK, 2);
         }
         else
         {
-            stack.addEnchantment(Enchantment.LUCK, 3);
+            stack.addUnsafeEnchantment(Enchantment.LUCK, 3);
         }
     }
     
@@ -472,15 +472,15 @@ public class TieredSmity implements Listener
         } 
         else if (efficiency < 0.7)
         {
-            stack.addEnchantment(Enchantment.DIG_SPEED, 1);
+            stack.addUnsafeEnchantment(Enchantment.DIG_SPEED, 1);
         }       
         else if (efficiency < 0.9)
         {
-            stack.addEnchantment(Enchantment.DIG_SPEED, 2);
+            stack.addUnsafeEnchantment(Enchantment.DIG_SPEED, 2);
         }
         else
         {
-            stack.addEnchantment(Enchantment.DIG_SPEED, 3);
+            stack.addUnsafeEnchantment(Enchantment.DIG_SPEED, 3);
         }
     }
     

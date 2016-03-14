@@ -4,11 +4,6 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/ruman/Project/MinecraftSpigotPlugins/SmithyOverhaul/src/io/github/rumangerst/smithyoverhaul/TieredSmity.java</file>
-            <file>file:/home/ruman/Project/MinecraftSpigotPlugins/SmithyOverhaul/src/io/github/rumangerst/smithyoverhaul/SmithyOverhaulPlugin.java</file>
-            <file>file:/home/ruman/Project/MinecraftSpigotPlugins/SmithyOverhaul/src/io/github/rumangerst/spigot/nbtapi/SpigotNBT.java</file>
-            <file>file:/home/ruman/Project/MinecraftSpigotPlugins/SmithyOverhaul/src/plugin.yml</file>
-            <file>file:/home/ruman/Project/MinecraftSpigotPlugins/SmithyOverhaul/src/io/github/rumangerst/smithyoverhaul/TieredTool.java</file>
-            <file>file:/home/ruman/Project/MinecraftSpigotPlugins/SmithyOverhaul/src/io/github/rumangerst/smithyoverhaul/tooleffects/TieredToolPotionEffect.java</file>
         </group>
     </open-files>
 </project-private>

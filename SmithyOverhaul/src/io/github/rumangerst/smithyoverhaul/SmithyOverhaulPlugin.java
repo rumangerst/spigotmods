@@ -6,10 +6,10 @@ import io.github.rumangerst.smithyoverhaul.items.CraftedTool;
 import io.github.rumangerst.smithyoverhaul.items.UnfinishedSword;
 import io.github.rumangerst.smithyoverhaul.items.UnfinishedTool;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftFurnaceRecipe;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -89,11 +89,10 @@ public class SmithyOverhaulPlugin extends JavaPlugin implements Listener
     
     private void createFurnaceCoalSmelting()
     {
-        ItemStack src = new ItemStack(Material.COAL);
         ItemStack dst = new ItemStack(Material.GRAVEL);        
         NBTAPI.setString(dst, "display/Name", "Asche");
         
-        getServer().addRecipe(new CraftFurnaceRecipe(dst, src));
+        getServer().addRecipe(new FurnaceRecipe(dst, Material.COAL));
     }
     
     @Override

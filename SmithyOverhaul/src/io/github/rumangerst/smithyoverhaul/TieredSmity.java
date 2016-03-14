@@ -196,12 +196,12 @@ public class TieredSmity implements Listener
         NBTAPI.setDouble(stack, "tieredsmithy/temparature", newtemparature); 
         NBTAPI.setDouble(stack, "tieredsmithy/hardness", newhardness);
         
-        player.playSound(player.getLocation(), Sound.GHAST_FIREBALL, 0.5f, 0.2f);
+        player.playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 0.5f, 0.2f);
         introduceTimeout(stack, 1);
         
         if(newtemparature >= 0.94)
         {
-            player.playSound(player.getLocation(), Sound.ITEM_BREAK, 1, 1);
+            player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
             player.setItemInHand(null);
 
             additionalinformation.add(ChatColor.RED + "Es ist geschmolzen!");
@@ -222,9 +222,9 @@ public class TieredSmity implements Listener
         NBTAPI.setDouble(stack, "tieredsmithy/hardness", Math.max(hardness, temparature));
         
         if(temparature >= TEMPARATURE_HOT)
-            player.playSound(player.getLocation(), Sound.FIZZ, 1, 1); //if temp high enough
+            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 1, 1); //if temp high enough
         else
-            player.playSound(player.getLocation(), Sound.SPLASH, 0.8f, 1);
+            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_SPLASH, 0.8f, 1);
         introduceTimeout(stack, 1);
     }
     
@@ -240,7 +240,7 @@ public class TieredSmity implements Listener
             // OK. Player wants to destroy it
             if(random.nextDouble() < 0.33)
             {
-                player.playSound(player.getLocation(), Sound.ITEM_BREAK, 1, 1);
+                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
                 player.setItemInHand(null);
                 
                 additionalinformation.add(ChatColor.RED + "Du hast dein Werkstück kaputtgehauen!");
@@ -288,7 +288,7 @@ public class TieredSmity implements Listener
         }
         else
         {
-            player.playSound(player.getLocation(), Sound.ITEM_BREAK, 1, 1);
+            player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
             player.setItemInHand(null);
 
             additionalinformation.add(ChatColor.RED + "Du hast dein Werkstück kaputtgehauen!");
@@ -303,7 +303,7 @@ public class TieredSmity implements Listener
         double newtemparature = randomDecreaseWeaker(temparature, 0, TEMPARATURE_DECREASE_OPERATION);
         NBTAPI.setDouble(stack,"tieredsmithy/temparature", newtemparature);
         
-        player.playSound(player.getLocation(), Sound.ANVIL_USE, 1, 1);
+        player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
         introduceTimeout(stack, 3);
     }
     
@@ -345,7 +345,7 @@ public class TieredSmity implements Listener
             // OK. Player wants to destroy it
             if(random.nextDouble() < 0.33)
             {
-                player.playSound(player.getLocation(), Sound.ITEM_BREAK, 1, 1);
+                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
                 player.setItemInHand(null);
                 
                 additionalinformation.add(ChatColor.RED + "Dein Werkstück ist kaputtgegangen! Kühle es vorher ab!");
@@ -356,8 +356,8 @@ public class TieredSmity implements Listener
             NBTAPI.setDouble(stack,"tieredsmithy/form_detail", 0);
         }
         
-        player.playSound(player.getLocation(), Sound.HORSE_BREATHE, 1, 1);
-        player.playSound(player.getLocation(), Sound.ITEM_BREAK, 1, 1.4f);
+        player.playSound(player.getLocation(), Sound.ENTITY_HORSE_BREATHE, 1, 1);
+        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1.4f);
         
         introduceTimeout(stack, 1);
     }
@@ -388,27 +388,27 @@ public class TieredSmity implements Listener
         {
             block.setType(Material.AIR);
             
-            player.playSound(player.getLocation(), Sound.FIRE_IGNITE, 1, 1);
-            player.playSound(player.getLocation(), Sound.FIRE, 1, 1);
+            player.playSound(player.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 1);
+            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_BURN, 1, 1);
             additionalinformation.add(ChatColor.RED + "Du hast die Wolle in Brand gesteckt!");
         }
         else
         {
             // OK. Player wants to destroy it
-            player.playSound(player.getLocation(), Sound.ITEM_BREAK, 1, 1);
+            player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
             player.setItemInHand(null);
             
             // Destroy the polish tool
             block.setType(Material.AIR);
             
-            player.playSound(player.getLocation(), Sound.FIRE_IGNITE, 1, 1);
-            player.playSound(player.getLocation(), Sound.FIRE, 1, 1);
+            player.playSound(player.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 1);
+            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_BURN, 1, 1);
 
             additionalinformation.add(ChatColor.RED + "Dein Werkstück ist kaputtgegangen! Kühle es vorher ab!");
             additionalinformation.add(ChatColor.RED + "Du hast die Wolle in Brand gesteckt!");
         }
         
-        player.playSound(player.getLocation(), Sound.HORSE_BREATHE, 1, 1);
+        player.playSound(player.getLocation(), Sound.ENTITY_HORSE_BREATHE, 1, 1);
         introduceTimeout(stack, 1);
     }
     
@@ -496,14 +496,14 @@ public class TieredSmity implements Listener
         if(temparature >= TEMPARATURE_HOT)
         {
             // OK. Player wants to destroy it
-            player.playSound(player.getLocation(), Sound.ITEM_BREAK, 1, 1);
+            player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
             player.setItemInHand(null);
 
             additionalinformation.add("Dein Werkstück ist kaputtgegangen! Kühle es vorher ab!");
             
             block.setType(Material.AIR);
-            player.playSound(player.getLocation(), Sound.FIRE_IGNITE, 1, 1);
-            player.playSound(player.getLocation(), Sound.FIRE, 1, 1);
+            player.playSound(player.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 1);
+            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_BURN, 1, 1);
             additionalinformation.add(ChatColor.RED + "Du hast den Tisch in Brand gesteckt!");
             
             return;
@@ -511,8 +511,8 @@ public class TieredSmity implements Listener
         else if(temparature >= TEMPARATURE_COLD)
         {
             block.setType(Material.AIR);
-            player.playSound(player.getLocation(), Sound.FIRE_IGNITE, 1, 1);
-            player.playSound(player.getLocation(), Sound.FIRE, 1, 1);
+            player.playSound(player.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 1);
+            player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_BURN, 1, 1);
             additionalinformation.add(ChatColor.RED + "Du hast den Tisch in Brand gesteckt!");
             
             return;
@@ -544,7 +544,7 @@ public class TieredSmity implements Listener
         
         NBTAPI.remove(stack, "tieredsmithy");
         
-        player.playSound(player.getLocation(), Sound.LEVEL_UP, 1, 1);
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
     }
     
     @EventHandler

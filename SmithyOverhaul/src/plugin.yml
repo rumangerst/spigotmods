@@ -1,3 +1,4 @@
 name: SmithyOverhaul
 main: io.github.rumangerst.smithyoverhaul.SmithyOverhaulPlugin
 version: 1.0
+depend: [BountifulAPI,CustomItems]

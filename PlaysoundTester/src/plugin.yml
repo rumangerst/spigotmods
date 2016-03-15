@@ -1,0 +1,4 @@
+name: PlaysoundTester
+main: io.github.rumangerst.playsoundtester.PlaysoundTesterPlugin
+version: 1.0
+depend: [CustomItems]

@@ -659,13 +659,17 @@ public class NBTAPI
     }*/
     
     //Metadata wrappers
-    public static MetadataValue getMetadata(org.bukkit.metadata.Metadatable entity, String key)
+    public static MetadataValue getMetadata(org.bukkit.metadata.Metadatable entity, String key, Plugin plugin)
     {
         key = key.replace("/", "_");
         
         if(entity.hasMetadata(key))
         {
-            return entity.getMetadata(key).get(0);
+            for(MetadataValue v : entity.getMetadata(key))
+            {
+                if(v.getOwningPlugin() == plugin)
+                    return v;
+            }
         }
         
         return null;
@@ -673,19 +677,13 @@ public class NBTAPI
     
     public static void setMetadata(org.bukkit.metadata.Metadatable entity, String key, Object value, Plugin plugin)
     {
-        key = key.replace("/", "_");
-        
-        MetadataValue existing = getMetadata(entity, key);
-        
-        if(existing != null)
-            existing.invalidate();
-        
+        key = key.replace("/", "_");  
         entity.setMetadata(key, new FixedMetadataValue(plugin, value));
     }
     
-    public static String getMetadataString(org.bukkit.metadata.Metadatable entity, String key, String defaultvalue)
+    public static String getMetadataString(org.bukkit.metadata.Metadatable entity, String key, String defaultvalue, Plugin plugin)
     {
-        MetadataValue v = getMetadata(entity, key);
+        MetadataValue v = getMetadata(entity, key, plugin);
         
         if(v == null)
             return defaultvalue;
@@ -693,9 +691,9 @@ public class NBTAPI
             return v.asString();
     }
     
-    public static double getMetadataDouble(org.bukkit.metadata.Metadatable entity, String key, double defaultvalue)
+    public static double getMetadataDouble(org.bukkit.metadata.Metadatable entity, String key, double defaultvalue, Plugin plugin)
     {
-        MetadataValue v = getMetadata(entity, key);
+        MetadataValue v = getMetadata(entity, key, plugin);
         
         if(v == null)
             return defaultvalue;
@@ -703,9 +701,9 @@ public class NBTAPI
             return v.asDouble();
     }
     
-    public static float getMetadataFloat(org.bukkit.metadata.Metadatable entity, String key, float defaultvalue)
+    public static float getMetadataFloat(org.bukkit.metadata.Metadatable entity, String key, float defaultvalue, Plugin plugin)
     {
-        MetadataValue v = getMetadata(entity, key);
+        MetadataValue v = getMetadata(entity, key, plugin);
         
         if(v == null)
             return defaultvalue;
@@ -713,9 +711,9 @@ public class NBTAPI
             return v.asFloat();
     }
     
-    public static int getMetadataInt(org.bukkit.metadata.Metadatable entity, String key, int defaultvalue)
+    public static int getMetadataInt(org.bukkit.metadata.Metadatable entity, String key, int defaultvalue, Plugin plugin)
     {
-        MetadataValue v = getMetadata(entity, key);
+        MetadataValue v = getMetadata(entity, key, plugin);
         
         if(v == null)
             return defaultvalue;
@@ -723,9 +721,9 @@ public class NBTAPI
             return v.asInt();
     }
     
-    public static long getMetadataLong(org.bukkit.metadata.Metadatable entity, String key, long defaultvalue)
+    public static long getMetadataLong(org.bukkit.metadata.Metadatable entity, String key, long defaultvalue, Plugin plugin)
     {
-        MetadataValue v = getMetadata(entity, key);
+        MetadataValue v = getMetadata(entity, key, plugin);
         
         if(v == null)
             return defaultvalue;
@@ -733,9 +731,9 @@ public class NBTAPI
             return v.asLong();
     }
     
-    public static boolean getMetadataBool(org.bukkit.metadata.Metadatable entity, String key, boolean defaultvalue)
+    public static boolean getMetadataBool(org.bukkit.metadata.Metadatable entity, String key, boolean defaultvalue, Plugin plugin)
     {
-        MetadataValue v = getMetadata(entity, key);
+        MetadataValue v = getMetadata(entity, key, plugin);
         
         if(v == null)
             return defaultvalue;
@@ -743,9 +741,9 @@ public class NBTAPI
             return v.asBoolean();
     }
     
-    public static byte getMetadataByte(org.bukkit.metadata.Metadatable entity, String key, byte defaultvalue)
+    public static byte getMetadataByte(org.bukkit.metadata.Metadatable entity, String key, byte defaultvalue, Plugin plugin)
     {
-        MetadataValue v = getMetadata(entity, key);
+        MetadataValue v = getMetadata(entity, key, plugin);
         
         if(v == null)
             return defaultvalue;
@@ -753,9 +751,9 @@ public class NBTAPI
             return v.asByte();
     }
     
-    public static short getMetadataShort(org.bukkit.metadata.Metadatable entity, String key, short defaultvalue)
+    public static short getMetadataShort(org.bukkit.metadata.Metadatable entity, String key, short defaultvalue, Plugin plugin)
     {
-        MetadataValue v = getMetadata(entity, key);
+        MetadataValue v = getMetadata(entity, key, plugin);
         
         if(v == null)
             return defaultvalue;

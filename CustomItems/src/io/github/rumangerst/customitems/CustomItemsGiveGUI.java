@@ -7,6 +7,7 @@ package io.github.rumangerst.customitems;
 
 import io.github.rumangerst.customitems.nbt.NBTAPI;
 import java.util.ArrayList;
+import java.util.Comparator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -58,7 +59,18 @@ public class CustomItemsGiveGUI implements CommandExecutor, Listener
         Inventory inv = Bukkit.createInventory(null, 54, "Custom Items API (" + (inventories.size() + 1) + ")");        
         int current_count = 0;
         
-        for(CustomItem item : api.items.values())
+        ArrayList<CustomItem> items = new ArrayList<>(api.items.values());
+        items.sort(new Comparator<CustomItem>() 
+        {
+            @Override
+            public int compare(CustomItem o1, CustomItem o2)
+            {
+                return o1.id.compareTo(o2.id);
+            }
+            
+        });
+        
+        for(CustomItem item : items)
         {
             if(current_count < 45)
             {            

@@ -20,16 +20,29 @@ public class CustomItem implements Listener
 {
     String id;
     protected Material type;
-    protected byte data;
+    protected byte data;    
     protected String name;
     protected String[] lore = new String[0];
     
     public CustomItem(String id, Material type, byte data, String name)
     {
+        if(id.isEmpty() || id.contains(" "))
+            throw new IllegalArgumentException("Illegal ID for custom item!");
+        
         this.id = id;
         this.type = type;
         this.data = data;
         this.name = name;
+    }
+    
+    public CustomItem(String id, Material type, MaterialData data, String name)
+    {
+        this(id, type, data.getData(), name);
+    }
+    
+    public CustomItem(String id, Material type, String name)
+    {
+        this(id, type, (byte)0, name);
     }
     
     public String getId()

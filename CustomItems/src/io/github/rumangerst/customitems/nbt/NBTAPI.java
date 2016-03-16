@@ -5,8 +5,11 @@
  */
 package io.github.rumangerst.customitems.nbt;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import net.minecraft.server.v1_9_R1.ItemStack;
+import net.minecraft.server.v1_9_R1.NBTBase;
 import net.minecraft.server.v1_9_R1.NBTTagCompound;
 import net.minecraft.server.v1_9_R1.NBTTagList;
 import net.minecraft.server.v1_9_R1.NBTTagString;
@@ -55,6 +58,11 @@ public class NBTAPI
     private static void setLong(NBTTagCompound nbt, String key, long value)
     {
         navigateToContainer(nbt, key, true).setLong(finalKeyString(key), value);
+    }
+    
+    private static void set(NBTTagCompound nbt, String key, NBTBase value)
+    {
+        navigateToContainer(nbt, key, true).set(finalKeyString(key), value);
     }
 
     private static void setStringList(NBTTagCompound nbt, String key, String... value)
@@ -161,6 +169,15 @@ public class NBTAPI
         setDouble(nbt, key, value);
         saveNBT(stack, cbitemstack);
     }
+    
+    public static void setBool(org.bukkit.inventory.ItemStack cbitemstack, String key, boolean value)
+    {
+        ItemStack stack = CraftItemStack.asNMSCopy(cbitemstack);
+        NBTTagCompound nbt = getOrCreateNBT(stack);
+
+        setBool(nbt, key, value);
+        saveNBT(stack, cbitemstack);
+    }
 
     public static void setInt(org.bukkit.inventory.ItemStack cbitemstack, String key, int value)
     {
@@ -200,6 +217,15 @@ public class NBTAPI
         NBTTagCompound nbt = getOrCreateNBT(stack);
 
         setStringList(nbt, key, value);
+        saveNBT(stack, cbitemstack);
+    }
+    
+    public static void set(org.bukkit.inventory.ItemStack cbitemstack, String key, NBTBase value)
+    {
+        ItemStack stack = CraftItemStack.asNMSCopy(cbitemstack);
+        NBTTagCompound nbt = getOrCreateNBT(stack);
+
+        set(nbt, key, value);
         saveNBT(stack, cbitemstack);
     }
 
@@ -246,6 +272,20 @@ public class NBTAPI
         return false;
     }
 
+    public static Collection<String> keys(org.bukkit.inventory.ItemStack cbitemstack, String key)
+    {
+        NBTTagCompound c = getCompound(cbitemstack, key, null);
+        
+        if(c != null)
+        {
+            return c.c();
+        }
+        else
+        {
+            return new ArrayList<>();
+        }
+    }
+    
     public static boolean has(org.bukkit.inventory.ItemStack cbitemstack, String key)
     {
         ItemStack stack = CraftItemStack.asNMSCopy(cbitemstack);
@@ -262,6 +302,42 @@ public class NBTAPI
         }
 
         return false;
+    }
+    
+    public static NBTTagCompound getCompound(org.bukkit.inventory.ItemStack cbitemstack, String key, NBTTagCompound defaultvalue)
+    {
+        ItemStack stack = CraftItemStack.asNMSCopy(cbitemstack);
+
+        if (stack != null && stack.hasTag())
+        {
+            NBTTagCompound container = navigateToContainer(stack.getTag(), key, false);
+            String containerkey = finalKeyString(key);
+
+            if (container != null && container.hasKey(containerkey))
+            {
+                return container.getCompound(containerkey);
+            }
+        }
+
+        return defaultvalue;
+    }
+    
+    public static NBTTagList getList(org.bukkit.inventory.ItemStack cbitemstack, String key, int type, NBTTagList defaultvalue)
+    {
+        ItemStack stack = CraftItemStack.asNMSCopy(cbitemstack);
+
+        if (stack != null && stack.hasTag())
+        {
+            NBTTagCompound container = navigateToContainer(stack.getTag(), key, false);
+            String containerkey = finalKeyString(key);
+
+            if (container != null && container.hasKey(containerkey))
+            {
+                return container.getList(containerkey, type);
+            }
+        }
+
+        return defaultvalue;
     }
 
     public static String getString(org.bukkit.inventory.ItemStack cbitemstack, String key, String defaultvalue)

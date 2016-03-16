@@ -22,7 +22,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  *
  * @author ruman
  */
-public class MagicElementProjectileCrystal extends MagicElementCrystal
+/*public class MagicElementProjectileCrystal extends MagicCrystal
 {
     private CrystalMagicPlugin plugin;    
     
@@ -41,7 +41,8 @@ public class MagicElementProjectileCrystal extends MagicElementCrystal
             event.setRadius(0);
             event.setCancelled(true);
             
-            event.getEntity().getWorld().strikeLightning(event.getEntity().getLocation());            
+            event.getEntity().getWorld().strikeLightning(event.getEntity().getLocation());          
+            event.getEntity().getWorld().createExplosion(event.getEntity().getLocation(), 2.0f, true);
         }
     }
     
@@ -64,7 +65,7 @@ public class MagicElementProjectileCrystal extends MagicElementCrystal
                 isOf(event.getPlayer().getInventory().getItemInOffHand())))
         {
             Player player = event.getPlayer();
-            Location spawnAt = player.getEyeLocation().toVector().add(player.getEyeLocation().getDirection()).toLocation(player.getWorld());
+            Location spawnAt = player.getEyeLocation().toVector().add(player.getEyeLocation().getDirection().multiply(2)).toLocation(player.getWorld());
 
             Fireball entity = (Fireball)player.getWorld().spawnEntity(spawnAt, EntityType.FIREBALL);
             entity.setDirection(player.getEyeLocation().getDirection());
@@ -73,4 +74,4 @@ public class MagicElementProjectileCrystal extends MagicElementCrystal
         }
     }
     
-}
+}*/

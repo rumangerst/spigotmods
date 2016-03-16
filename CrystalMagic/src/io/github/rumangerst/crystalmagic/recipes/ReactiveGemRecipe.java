@@ -7,6 +7,8 @@ package io.github.rumangerst.crystalmagic.recipes;
 
 import io.github.rumangerst.crystalmagic.CrystalMagicPlugin;
 import io.github.rumangerst.crystalmagic.MagicRecipe;
+import io.github.rumangerst.crystalmagic.MagicTable;
+import io.github.rumangerst.crystalmagic.crystalls.ReactiveGem;
 import io.github.rumangerst.customitems.AnyItem;
 import io.github.rumangerst.customitems.AnyItemStack;
 import io.github.rumangerst.customitems.CustomItemsAPI;
@@ -27,8 +29,11 @@ public class ReactiveGemRecipe extends MagicRecipe
     }
 
     @Override
-    public boolean execute(Inventory items, int seal, int modus, int level)
+    public boolean execute(Inventory items, MagicTable.Seal seal, MagicTable.Modus modus, int level)
     {
+        if(seal != MagicTable.Seal.Order && modus != MagicTable.Modus.Open)
+            return false;
+        
         CustomItemsAPI api = CustomItemsAPI.api(plugin);
         
         AnyItemStack ingredient_diamond = new AnyItemStack(new AnyItem(Material.DIAMOND), 1);
@@ -36,29 +41,32 @@ public class ReactiveGemRecipe extends MagicRecipe
         AnyItemStack ingredient_lapis = new AnyItemStack(new AnyItem(Material.INK_SACK, (byte)4), 1);
         AnyItemStack ingredient_gold = new AnyItemStack(new AnyItem(Material.GOLD_INGOT), 1);
         
+        ReactiveGem gem = null;
+        
         if(InventoryHelper.is(api, items.getContents(), ingredient_diamond, ingredient_gold))
         {
-            items.clear();
-            items.addItem(api.getCustomItem("magicreactivediamond").make(1));
-            
-            return true;
+            gem = (ReactiveGem)api.getCustomItem("magicreactivediamond");
         }
         else if(InventoryHelper.is(api, items.getContents(), ingredient_emerlad, ingredient_gold))
         {
-            items.clear();
-            items.addItem(api.getCustomItem("magicreactiveemerald").make(1));
-            
-            return true;
+            gem = (ReactiveGem)api.getCustomItem("magicreactiveemerald");
         }
         else if(InventoryHelper.is(api, items.getContents(), ingredient_lapis, ingredient_gold))
         {
+            gem = (ReactiveGem)api.getCustomItem("magicreactivelapis");
+        }
+        
+        if(gem != null)
+        {
             items.clear();
-            items.addItem(api.getCustomItem("magicreactivelapis").make(1));
+            items.addItem(gem.make(1, level));
             
             return true;
         }
-        
-        return false;
+        else
+        {
+            return false;
+        }
     }
     
 }

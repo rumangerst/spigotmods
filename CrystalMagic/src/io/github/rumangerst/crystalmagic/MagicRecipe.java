@@ -20,5 +20,5 @@ public abstract class MagicRecipe
         this.plugin = plugin;
     }
     
-    public abstract boolean execute(Inventory items, int seal, int modus, int level);
+    public abstract boolean execute(Inventory items, MagicTable.Seal seal, MagicTable.Modus modus, int level);
 }

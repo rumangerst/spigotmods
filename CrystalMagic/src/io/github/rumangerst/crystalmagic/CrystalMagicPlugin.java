@@ -7,15 +7,15 @@ package io.github.rumangerst.crystalmagic;
 
 import io.github.rumangerst.crystalmagic.crystalls.CollectorGem;
 import io.github.rumangerst.crystalmagic.crystalls.MagicCrystal;
-import io.github.rumangerst.crystalmagic.crystalls.MagicElementCrystal;
-import io.github.rumangerst.crystalmagic.crystalls.MagicElementProjectileCrystal;
 import io.github.rumangerst.crystalmagic.crystalls.MagicGem;
 import io.github.rumangerst.crystalmagic.crystalls.ReactiveGem;
 import io.github.rumangerst.crystalmagic.elements.Element;
 import io.github.rumangerst.crystalmagic.patterns.ModusOpen;
 import io.github.rumangerst.crystalmagic.spells.SpellHandler;
+import io.github.rumangerst.customitems.CustomItem;
 import io.github.rumangerst.customitems.CustomItemsAPI;
 import java.io.IOException;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Material;
@@ -35,6 +35,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class CrystalMagicPlugin extends JavaPlugin implements Listener
 {   
     public static PluginLogger LOGGER;
+    public static Random RANDOM  = new Random();
+    
     public MagicTable magictable;
     public SpellHandler spellhandler;
     
@@ -95,25 +97,26 @@ public class CrystalMagicPlugin extends JavaPlugin implements Listener
         CustomItemsAPI api = CustomItemsAPI.api(this);
         
         //Gems
-        api.registerItem(this, new ReactiveGem("magicreactiveemerald", Material.EMERALD, (byte)0, "Reaktiver Smaragd"));
-        api.registerItem(this, new ReactiveGem("magicreactivediamond", Material.DIAMOND, (byte)0, "Reaktiver Diamant"));
-        api.registerItem(this, new ReactiveGem("magicreactivelapis", Material.INK_SACK, (byte)4, "Reaktiver Lapis"));
-        api.registerItem(this, new CollectorGem("magiccollectoremerald", Material.EMERALD, (byte)0, "Sammler-Smaragd"));
-        api.registerItem(this, new CollectorGem("magiccollectordiamond", Material.DIAMOND, (byte)0, "Sammler-Diamant"));
-        api.registerItem(this, new CollectorGem("magiccollectorlapis", Material.INK_SACK, (byte)4, "Sammler-Lapis"));
-        api.registerItem(this, new MagicGem("magicmagicemerald", Material.EMERALD, (byte)0, "Magischer Smaragd"));
-        api.registerItem(this, new MagicGem("magicmagicdiamond", Material.DIAMOND, (byte)0, "Magischer Diamant"));
-        api.registerItem(this, new MagicGem("magicmagiclapis", Material.INK_SACK, (byte)4, "Magischer Lapis"));
-        api.registerItem(this, new ReactiveGem("magicbrokenemerald", Material.EMERALD, (byte)0, "Stumpfer Smaragd"));
-        api.registerItem(this, new ReactiveGem("magicbrokendiamond", Material.DIAMOND, (byte)0, "Stumpfer Diamant"));
-        api.registerItem(this, new ReactiveGem("magicbrokenlapis", Material.INK_SACK, (byte)4, "Stumpfer Lapis"));
+        api.registerItem(this, new ReactiveGem("magicreactiveemerald", Material.EMERALD, (byte)0, "Reaktiver Smaragd", this));
+        api.registerItem(this, new ReactiveGem("magicreactivediamond", Material.DIAMOND, (byte)0, "Reaktiver Diamant", this));
+        api.registerItem(this, new ReactiveGem("magicreactivelapis", Material.INK_SACK, (byte)4, "Reaktiver Lapis", this));
+        api.registerItem(this, new CollectorGem("magiccollectoremerald", Material.EMERALD, (byte)0, "Sammler-Smaragd", this));
+        api.registerItem(this, new CollectorGem("magiccollectordiamond", Material.DIAMOND, (byte)0, "Sammler-Diamant", this));
+        api.registerItem(this, new CollectorGem("magiccollectorlapis", Material.INK_SACK, (byte)4, "Sammler-Lapis", this));
+        api.registerItem(this, new MagicGem("magicmagicemerald", Material.EMERALD, (byte)0, "Magischer Smaragd", this));
+        api.registerItem(this, new MagicGem("magicmagicdiamond", Material.DIAMOND, (byte)0, "Magischer Diamant", this));
+        api.registerItem(this, new MagicGem("magicmagiclapis", Material.INK_SACK, (byte)4, "Magischer Lapis", this));
+        api.registerItem(this, new CustomItem("magicbrokenemerald", Material.EMERALD, (byte)0, "Stumpfer Smaragd"));
+        api.registerItem(this, new CustomItem("magicbrokendiamond", Material.DIAMOND, (byte)0, "Stumpfer Diamant"));
+        api.registerItem(this, new CustomItem("magicbrokenlapis", Material.INK_SACK, (byte)4, "Stumpfer Lapis"));
         
         //Magic crystals
-        api.registerItem(this, new MagicCrystal("magicmagiccrystal", "Magischer Kristall"));
-        api.registerItem(this, new MagicCrystal("magicmagiccollectorcrystal", "Magischer Sammlerkristall"));
-        api.registerItem(this, new MagicElementCrystal("magicmagicelementcrystal", "Magischer Elementkristall"));
-        api.registerItem(this, new MagicElementProjectileCrystal("magicmagicprojectileelementcrystal", "Magischer Elementkristall (Projektil)", this));
-        api.registerItem(this, new MagicCrystal("magicbrokenmagiccrystal", "Stumpfer Magischer Kristall"));
+        api.registerItem(this, new MagicCrystal("magicmagiccrystal", "Magischer Kristall", this));
+        //api.registerItem(this, new MagicCrystal("magicmagiccollectorcrystal", "Magischer Sammlerkristall"));
+        //api.registerItem(this, new MagicElementCrystal("magicmagicelementcrystal", "Magischer Elementkristall (Konduktor)"));
+        //api.registerItem(this, new MagicElementCrystal("magicmagicelementinstantcrystal", "Magischer Elementkristall (Speicher)"));
+        //api.registerItem(this, new MagicElementProjectileCrystal("magicmagicprojectileelementcrystal", "Magischer Projektilelementkristall (Konduktor)", this));
+        api.registerItem(this, new CustomItem("magicbrokenmagiccrystal", Material.NETHER_STAR, "Stumpfer Magischer Kristall"));
     }
     
     private void registerElements()
@@ -121,11 +124,11 @@ public class CrystalMagicPlugin extends JavaPlugin implements Listener
         CustomItemsAPI api = CustomItemsAPI.api(this);
         
         // Basic elements
-        api.registerItem(this, new Element("magicfireelement", "Kerze", "Fackel", "Kamin", "Tiefe", "Inferno"));
-        api.registerItem(this, new Element("magicwaterelement", "Brise", "Wind", "Sturm", "Eis", "Leere"));
-        api.registerItem(this, new Element("magicliveelement", "Wiese", "Wald", "Quelle", "Berg", "Leben"));
-        api.registerItem(this, new Element("magicmagicelement", "Graphit", "Quartz", "Malachit", "Diamant", "Kristall"));
-        api.registerItem(this, new Element("magicinversionelement", "Sonnenblume", "Schneeflocke", "Welle", "Erde", "Fraktal"));
+        api.registerItem(this, new Element("magicfireelement", "Kerze", "Fackel", "Kamin", "Inferno"));
+        api.registerItem(this, new Element("magicwaterelement", "Brise", "Wind", "Sturm", "Leere"));
+        api.registerItem(this, new Element("magiclifeelement", "Wiese", "Wald", "Quelle", "Leben"));
+        api.registerItem(this, new Element("magicmagicelement", "Quartz", "Smaragd", "Diamant", "Kristall"));
+        api.registerItem(this, new Element("magicinversionelement", "Sonnenblume", "Schneeflocke", "Welle", "Fraktal"));
         
         //Derived elements
         api.registerItem(this, new Element("magicthornselement", "Igel"));

@@ -10,6 +10,8 @@ import io.github.rumangerst.crystalmagic.patterns.ModusFilter;
 import io.github.rumangerst.crystalmagic.patterns.ModusOpen;
 import io.github.rumangerst.crystalmagic.patterns.SealBalanceSmall;
 import io.github.rumangerst.crystalmagic.patterns.SealOrderSmall;
+import io.github.rumangerst.crystalmagic.recipes.CollectorGemRecipe;
+import io.github.rumangerst.crystalmagic.recipes.MagicCrystalRecipe;
 import io.github.rumangerst.crystalmagic.recipes.ReactiveGemRecipe;
 import io.github.rumangerst.crystalmagic.spells.MagicTableSpell;
 import java.util.ArrayList;
@@ -43,7 +45,7 @@ public class MagicTable implements Listener
     private SealBalanceSmall seal_balance_small;
     
     private HashMap<Location, Inventory> inventories = new HashMap<>();
-    private HashMap<Location, Integer> tables = new HashMap<>();
+    private HashMap<Location, TableType> tables = new HashMap<>();
     
     private ArrayList<MagicRecipe> recipes = new ArrayList<>();
     
@@ -52,14 +54,29 @@ public class MagicTable implements Listener
     public static String INVENTORY_NAME_BALANCE_BIG = "Magie: Gleichgewicht";
     public static String INVENTORY_NAME_ORDER_BIG = "Magie: Ordnung";
     
-    public static final int MAGIC_TABLE_TYPE_NONE = 0;
-    public static final int MAGIC_TABLE_TYPE_BALANCE_SMALL = 1;
-    public static final int MAGIC_TABLE_TYPE_ORDER_SMALL = 2;
+    public enum TableType
+    {
+        None,
+        BalanceSmall,
+        BalanceBig,
+        OrderSmall,
+        OrderBig
+    }
     
-    public static final int MAGIC_TABLE_MODE_NONE = 0;
-    public static final int MAGIC_TABLE_MODE_OPEN = 1;
-    public static final int MAGIC_TABLE_MODE_FILTER = 2;
-    public static final int MAGIC_TABLE_MODE_CLOSED = 3;
+    public enum Seal
+    {
+        None,
+        Balance,
+        Order
+    }
+    
+    public enum Modus
+    {
+        None,
+        Open,
+        Filter,
+        Closed
+    }
     
     public MagicTable(CrystalMagicPlugin plugin)
     {
@@ -78,6 +95,8 @@ public class MagicTable implements Listener
     private void initializeRecipes()
     {
         recipes.add(new ReactiveGemRecipe(plugin));
+        recipes.add(new CollectorGemRecipe(plugin));
+        recipes.add(new MagicCrystalRecipe(plugin));
     }
     
     @EventHandler
@@ -111,10 +130,10 @@ public class MagicTable implements Listener
             else if(event.getAction() == Action.LEFT_CLICK_BLOCK && !plugin.spellhandler.isUsingSpell(event.getPlayer()))
             {
                 Location loc = event.getClickedBlock().getLocation();
-                int type = getTableTypeAt(loc);
-                int mode = getTableModeAt(loc);
+                TableType type = getTableTypeAt(loc);
+                Modus mode = getTableModusAt(loc);
                 
-                if(type != MAGIC_TABLE_TYPE_NONE && mode != MAGIC_TABLE_MODE_NONE)
+                if(type != TableType.None && mode != Modus.None)
                 {
                     plugin.spellhandler.spell(event.getPlayer(), new MagicTableSpell(plugin, loc, type, mode));
                     event.setCancelled(true);
@@ -144,19 +163,19 @@ public class MagicTable implements Listener
     
     public void executeRecipe(Location center, int level)
     {
-        int type = getTableTypeAt(center);
-        int mode = getTableModeAt(center);
+        TableType type = getTableTypeAt(center);
+        Modus mode = getTableModusAt(center);
         
         //destroy the pattern
         switch (mode)
         {
-            case MAGIC_TABLE_MODE_OPEN:
+            case Open:
                 modus_open.remove(center);
                 break;
-            case MAGIC_TABLE_MODE_FILTER:
+            case Filter:
                 modus_filter.remove(center);
                 break;
-            case MAGIC_TABLE_MODE_CLOSED:
+            case Closed:
                 modus_closed.remove(center);
                 break;
             default:
@@ -165,7 +184,7 @@ public class MagicTable implements Listener
         
         for(MagicRecipe recipe : recipes)
         {
-            if(recipe.execute(inventories.get(center), type, mode, level))
+            if(recipe.execute(inventories.get(center), getSealFrom(type), mode, level))
                 return;
         }
         
@@ -186,54 +205,69 @@ public class MagicTable implements Listener
         tables.remove(center);
     }
     
-    public int getTableModeAt(Location center)
+    public Modus getTableModusAt(Location center)
     {
         if(modus_open.test(center))
-            return MAGIC_TABLE_MODE_OPEN;
+            return Modus.Open;
         else if(modus_filter.test(center))
-            return MAGIC_TABLE_MODE_FILTER;
+            return Modus.Filter;
         else if(modus_closed.test(center))
-            return MAGIC_TABLE_MODE_CLOSED;
+            return Modus.Closed;
         else
-            return MAGIC_TABLE_MODE_NONE;
+            return Modus.None;
     }
     
-    public int getTableTypeAt(Location center)
+    public Seal getSealFrom(TableType type)
+    {
+        switch(type)
+        {
+            case BalanceBig:
+                return Seal.Balance;
+            case BalanceSmall:
+                return Seal.Balance;
+            case OrderBig:
+                return Seal.Order;
+            case OrderSmall:
+                return Seal.Order;
+            default:
+                return Seal.None;
+        }
+    }
+    
+    public TableType getTableTypeAt(Location center)
     {
         Location bottom = new Location(center.getWorld(), center.getBlockX(),center.getBlockY() - 1, center.getBlockZ());
         
-        int existing = tables.getOrDefault(center, MAGIC_TABLE_TYPE_NONE);
-        int updated = existing;
+        TableType existing = tables.getOrDefault(center, TableType.None);
+        TableType updated = existing;
         String updated_title = "";
         
         if(seal_order_small.test(bottom))
         {
-            updated = MAGIC_TABLE_TYPE_ORDER_SMALL;
+            updated = TableType.OrderSmall;
             updated_title = INVENTORY_NAME_ORDER_SMALL;
         }
         else if(seal_balance_small.test(bottom))
         {
-            updated = MAGIC_TABLE_TYPE_BALANCE_SMALL;
+            updated = TableType.BalanceSmall;
             updated_title = INVENTORY_NAME_BALANCE_SMALL;
         }
         else
         {
-            updated = MAGIC_TABLE_TYPE_NONE;
+            updated = TableType.None;
         }
         
         if(updated != existing)
         {
-            if(existing != MAGIC_TABLE_TYPE_NONE)
+            if(existing != TableType.None)
             {
                 breakTable(center);
             }
-            if(updated != MAGIC_TABLE_TYPE_NONE)
+            if(updated != TableType.None)
             {
                 Inventory inv = Bukkit.createInventory(null, 9, updated_title);
                 inventories.put(center, inv);
                 tables.put(center, updated);
-                
-                CrystalMagicPlugin.LOGGER.info("Registered tables: " + tables.size());
             }
         }
         
@@ -242,7 +276,7 @@ public class MagicTable implements Listener
     
     private boolean tryOpenTableInventory(Player player, Location center)
     {
-        if(getTableTypeAt(center) != MAGIC_TABLE_TYPE_NONE)
+        if(getTableTypeAt(center) != TableType.None)
         {
             player.getWorld().playSound(center, Sound.ENTITY_ELDER_GUARDIAN_AMBIENT, 1, 0.2f);
             player.openInventory(inventories.get(center));

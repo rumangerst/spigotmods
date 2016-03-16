@@ -20,20 +20,20 @@ public class MagicTableSpell implements Spell
 {
     CrystalMagicPlugin plugin;
     Location tableLocation;
-    int tableType;
-    int tableMode;
+    MagicTable.TableType tableType;
+    MagicTable.Modus tableMode;
     
     double load = 0;
     double max_load;
     
-    public MagicTableSpell(CrystalMagicPlugin plugin, Location tableLocation, int tabletype, int tablemode)
+    public MagicTableSpell(CrystalMagicPlugin plugin, Location tableLocation, MagicTable.TableType tabletype, MagicTable.Modus tablemode)
     {
         this.plugin = plugin;
         this.tableLocation = tableLocation;
         this.tableType = tabletype;
         this.tableMode = tablemode;
         
-        if(tabletype == MagicTable.MAGIC_TABLE_TYPE_BALANCE_SMALL || tabletype == MagicTable.MAGIC_TABLE_TYPE_ORDER_SMALL)
+        if(tabletype == MagicTable.TableType.BalanceSmall || tabletype == MagicTable.TableType.OrderSmall)
             max_load = 2;
         else 
             max_load = 4;
@@ -42,7 +42,7 @@ public class MagicTableSpell implements Spell
     @Override
     public void execute()
     {
-        if(plugin.magictable.getTableTypeAt(tableLocation) == tableType && plugin.magictable.getTableModeAt(tableLocation) == tableMode)
+        if(plugin.magictable.getTableTypeAt(tableLocation) == tableType && plugin.magictable.getTableModusAt(tableLocation) == tableMode)
         {
             if((int)load > 0)
             {
@@ -59,7 +59,7 @@ public class MagicTableSpell implements Spell
     @Override
     public boolean load()
     {
-        if(plugin.magictable.getTableTypeAt(tableLocation) != tableType || plugin.magictable.getTableModeAt(tableLocation) != tableMode)
+        if(plugin.magictable.getTableTypeAt(tableLocation) != tableType || plugin.magictable.getTableModusAt(tableLocation) != tableMode)
             return true;
         
         load = load + 0.5 * (max_load + 0.1 - load);

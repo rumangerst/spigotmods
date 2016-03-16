@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.github.rumangerst.crystalmagic;
+package io.github.rumangerst.crystalmagic.spells;
 
+import io.github.rumangerst.crystalmagic.CrystalMagicPlugin;
 import java.util.HashMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -16,12 +17,42 @@ import org.bukkit.event.Listener;
 public class SpellHandler implements Listener, Runnable
 {
     private CrystalMagicPlugin plugin;
-    private HashMap<Player, Spell> spells;
-    private HashMap<Player, Long> timeouts;
+    private HashMap<Player, Spell> spells = new HashMap<>();
     
     public SpellHandler(CrystalMagicPlugin plugin)
     {
+        this.plugin = plugin;
+    }
+    
+    private void cancelSpell(Player player)
+    {
+        if(isUsingSpell(player))
+        {
+            spells.remove(player);
+        }
+    }
+    
+    public void executeSpellNow(Player player)
+    {
+        Spell spell = spells.getOrDefault(player, null);
         
+        if(spell != null)
+        {
+            spell.execute();
+            spells.remove(player);
+        }
+    }
+    
+    public void spell(Player player, Spell spell)
+    {
+        CrystalMagicPlugin.LOGGER.info("Player " + player.getName() + " starts spell " + spell);
+        
+        if(isUsingSpell(player))
+        {
+            cancelSpell(player);
+        }
+        
+        spells.put(player, spell);
     }
     
     public boolean isUsingSpell(Player player)
@@ -31,7 +62,15 @@ public class SpellHandler implements Listener, Runnable
     
     public int getMana(Player player)
     {
-        return plugin.data_storage.getInt(player.getUniqueId().toString() + ".mana", 0);
+        return Math.max(0, plugin.data_storage.getInt(player.getUniqueId().toString() + ".mana", 0));
+    }
+    
+    public void setMana(Player player, int mana)
+    {
+        int max_mana = plugin.data_storage.getInt(player.getUniqueId().toString() + ".max_mana", 10);
+        plugin.data_storage.set(player.getUniqueId().toString() + ".mana", Math.min(max_mana, Math.max(0, mana)));
+        
+        player.sendMessage("Mana:" + mana);
     }
     
     /**
@@ -48,7 +87,7 @@ public class SpellHandler implements Listener, Runnable
            int current_mana = getMana(player);
            
            int new_mana = Math.min(max_mana, delta + current_mana);
-           plugin.data_storage.set(player.getUniqueId().toString() + ".mana", new_mana);
+           setMana(player, new_mana);
            
            return new_mana - current_mana;
        }
@@ -63,7 +102,7 @@ public class SpellHandler implements Listener, Runnable
                new_mana = 0;
            }
            
-           plugin.data_storage.set(player.getUniqueId().toString() + ".mana", new_mana);
+           setMana(player, new_mana);
            
            if(player.getHealth() <= 0)
            {
@@ -83,8 +122,12 @@ public class SpellHandler implements Listener, Runnable
     {
         for(Player player : spells.keySet())
         {
-            // To prevent preloading of spells, pull mana each second
-            modifyMana(player, -1);
+            Spell spell = spells.get(player);
+            
+            if(modifyMana(player, -spell.manaCost()) == 0 || spell.load())
+            {
+                executeSpellNow(player);
+            }
         }
     }
 }

@@ -5,13 +5,13 @@
  */
 package io.github.rumangerst.crystalmagic.crystalls;
 
-import io.github.rumangerst.crystalmagic.Spell;
+import io.github.rumangerst.crystalmagic.spells.Spell;
 
 /**
  *
  * @author ruman
  */
-public class MagicElementCrystal extends MagicCrystal implements Spell
+public class MagicElementCrystal extends MagicCrystal
 {
     
     public MagicElementCrystal(String id, String name)

@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.github.rumangerst.crystalmagic;
+package io.github.rumangerst.crystalmagic.spells;
+
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -11,5 +13,7 @@ package io.github.rumangerst.crystalmagic;
  */
 public interface Spell
 {
-    
+    public void execute();
+    public boolean load();    
+    public int manaCost();
 }

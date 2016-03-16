@@ -13,6 +13,7 @@ import io.github.rumangerst.crystalmagic.crystalls.MagicGem;
 import io.github.rumangerst.crystalmagic.crystalls.ReactiveGem;
 import io.github.rumangerst.crystalmagic.elements.Element;
 import io.github.rumangerst.crystalmagic.patterns.ModusOpen;
+import io.github.rumangerst.crystalmagic.spells.SpellHandler;
 import io.github.rumangerst.customitems.CustomItemsAPI;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -35,17 +36,20 @@ public class CrystalMagicPlugin extends JavaPlugin implements Listener
 {   
     public static PluginLogger LOGGER;
     public MagicTable magictable;
+    public SpellHandler spellhandler;
     
     public FileConfiguration data_storage;
     
     public CrystalMagicPlugin()
     {
-        LOGGER = new PluginLogger(this);
+        LOGGER = new PluginLogger(this);        
     }
     
     @Override
     public void onEnable()
     {
+        data_storage = getConfig();
+        
         try
         {            
             data_storage.load("crystalmagic.yml");
@@ -57,10 +61,12 @@ public class CrystalMagicPlugin extends JavaPlugin implements Listener
         
         registerItems();
         magictable = new MagicTable(this);       
+        spellhandler = new SpellHandler(this);
         
-        getServer().getPluginManager().registerEvents(magictable, this);
+        getServer().getPluginManager().registerEvents(magictable, this);        
+        getServer().getPluginManager().registerEvents(spellhandler, this);   
         
-        
+        getServer().getScheduler().runTaskTimer(this, spellhandler, CustomItemsAPI.secondsToTicks(1), CustomItemsAPI.secondsToTicks(1));
     }
     
     @Override
@@ -98,12 +104,16 @@ public class CrystalMagicPlugin extends JavaPlugin implements Listener
         api.registerItem(this, new MagicGem("magicmagicemerald", Material.EMERALD, (byte)0, "Magischer Smaragd"));
         api.registerItem(this, new MagicGem("magicmagicdiamond", Material.DIAMOND, (byte)0, "Magischer Diamant"));
         api.registerItem(this, new MagicGem("magicmagiclapis", Material.INK_SACK, (byte)4, "Magischer Lapis"));
+        api.registerItem(this, new ReactiveGem("magicbrokenemerald", Material.EMERALD, (byte)0, "Stumpfer Smaragd"));
+        api.registerItem(this, new ReactiveGem("magicbrokendiamond", Material.DIAMOND, (byte)0, "Stumpfer Diamant"));
+        api.registerItem(this, new ReactiveGem("magicbrokenlapis", Material.INK_SACK, (byte)4, "Stumpfer Lapis"));
         
         //Magic crystals
         api.registerItem(this, new MagicCrystal("magicmagiccrystal", "Magischer Kristall"));
         api.registerItem(this, new MagicCrystal("magicmagiccollectorcrystal", "Magischer Sammlerkristall"));
         api.registerItem(this, new MagicElementCrystal("magicmagicelementcrystal", "Magischer Elementkristall"));
         api.registerItem(this, new MagicElementProjectileCrystal("magicmagicprojectileelementcrystal", "Magischer Elementkristall (Projektil)", this));
+        api.registerItem(this, new MagicCrystal("magicbrokenmagiccrystal", "Stumpfer Magischer Kristall"));
     }
     
     private void registerElements()

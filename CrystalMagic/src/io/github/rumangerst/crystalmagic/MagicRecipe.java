@@ -13,17 +13,12 @@ import org.bukkit.inventory.Inventory;
  */
 public abstract class MagicRecipe
 {
-    public static final int MODUS_OPEN = 0;
-    public static final int MODUS_FILTER = 1;
-    public static final int MODUS_CLOSED = 2;
+    protected CrystalMagicPlugin plugin;
     
-    public static final int SEAL_ORDER = 0;
-    public static final int SEAL_BALANCE = 1;
-    
-    public MagicRecipe(int seal, int modus)
+    public MagicRecipe(CrystalMagicPlugin plugin)
     {
-        
+        this.plugin = plugin;
     }
     
-    public abstract boolean execute(Inventory items);
+    public abstract boolean execute(Inventory items, int seal, int modus, int level);
 }

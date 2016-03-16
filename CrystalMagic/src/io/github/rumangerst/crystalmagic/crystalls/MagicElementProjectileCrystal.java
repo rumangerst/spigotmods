@@ -6,7 +6,7 @@
 package io.github.rumangerst.crystalmagic.crystalls;
 
 import io.github.rumangerst.crystalmagic.CrystalMagicPlugin;
-import io.github.rumangerst.crystalmagic.Spell;
+import io.github.rumangerst.crystalmagic.spells.Spell;
 import io.github.rumangerst.customitems.nbt.NBTAPI;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -22,7 +22,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  *
  * @author ruman
  */
-public class MagicElementProjectileCrystal extends MagicElementCrystal implements Spell
+public class MagicElementProjectileCrystal extends MagicElementCrystal
 {
     private CrystalMagicPlugin plugin;    
     

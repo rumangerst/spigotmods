@@ -11,4 +11,4 @@ commands:
            
     cigive:
         description: Shows a GUI where you can give custom items to you
-        usage: /cigive
+        usage: /cigive [search]

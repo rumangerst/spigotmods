@@ -7,6 +7,7 @@ package io.github.rumangerst.customitems;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 /**
  * A custom item or a vanilla item
@@ -35,6 +36,11 @@ public class AnyItem
     public AnyItem(Material material)
     {
         this(material,(byte)0);
+    }
+    
+    public AnyItem(Material material, MaterialData data)
+    {
+        this(material,data.getData());
     }
     
     public boolean isVanilla()
@@ -72,6 +78,21 @@ public class AnyItem
             return new ItemStack(vanillamaterial, amount, (short)0, vanilladata);
         else
             return api.getCustomItem(customitem).make(amount);
+    }
+    
+    public boolean isOf(CustomItemsAPI api, ItemStack stack)
+    {
+        if(stack == null)
+            return false;
+        
+        if(isVanilla())
+        {
+            return stack.getType() == vanillamaterial && stack.getData().getData() == vanilladata;
+        }
+        else
+        {
+            return api.getCustomItem(customitem).isOf(stack);
+        }
     }
     
     @Override

@@ -116,6 +116,27 @@ public class CustomItem implements Listener
         return NBTAPI.getString(stack, "customitem/id", "").equals(id);
     }
     
+    /**
+     * Checks if the stack is this custom item and if the stack size is exactly 1
+     * @param stack
+     * @return 
+     */
+    public boolean isOfOnly(ItemStack stack)
+    {
+        return isOfOnly(stack, 1);
+    }
+    
+    /**
+     * Checks if the stack is this custom item and if the stack size is exactly 1
+     * @param stack
+     * @param amount
+     * @return 
+     */
+    public boolean isOfOnly(ItemStack stack, int amount)
+    {
+        return stack != null && stack.getAmount() == amount && isOf(stack);
+    }
+    
     @Override
     public String toString()
     {

@@ -9,6 +9,7 @@ import io.github.rumangerst.customitems.AnyItem;
 import io.github.rumangerst.customitems.AnyItemStack;
 import io.github.rumangerst.customitems.CustomItemsAPI;
 import java.util.HashSet;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -57,5 +58,23 @@ public class InventoryHelper
         }
         
         return items.length == inv_count && contains(api, inventory, items);
+    }
+    
+    /**
+     * Makes the stack maximum the amount as given by parameter and drops the rest
+     * @param player
+     * @param stack
+     * @param amount 
+     */
+    public static void makeAmount(Player player, ItemStack stack, int amount)
+    {
+        if(stack.getAmount() > amount)
+        {
+            ItemStack rem = new ItemStack(stack);
+            rem.setAmount(stack.getAmount() - amount);
+            
+            stack.setAmount(amount);
+            player.getWorld().dropItem(player.getLocation(), rem);
+        }
     }
 }

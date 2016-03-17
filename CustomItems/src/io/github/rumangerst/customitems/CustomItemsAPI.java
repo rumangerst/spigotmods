@@ -162,6 +162,37 @@ public class CustomItemsAPI
     }
     
     /**
+     * Returns if item is of item described by AnyItem
+     * @param stack
+     * @param item
+     * @return 
+     */
+    public boolean isOf(ItemStack stack, AnyItem item)
+    {
+        return item.isOf(this, stack);
+    }
+    
+    /**
+     * Returns if item stack is of custom item
+     * @param stack
+     * @param id
+     * @return 
+     */
+    public boolean isOf(ItemStack stack, String id)
+    {
+        CustomItem item = getCustomItem(stack);
+        
+        if(item != null)
+        {
+            return item.getId().equals(id);
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    /**
      * Gets custom item with id or null if id is unknown
      * @param id
      * @return 

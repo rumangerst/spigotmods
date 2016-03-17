@@ -8,7 +8,11 @@ package io.github.rumangerst.customitems.helpers;
 import io.github.rumangerst.customitems.AnyItem;
 import io.github.rumangerst.customitems.AnyItemStack;
 import io.github.rumangerst.customitems.CustomItemsAPI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,6 +27,13 @@ public class InventoryHelper
         
     }
     
+    /**
+     * Returns true if given inventory contains given item stacks. Accepts duplicate item stacks as input.
+     * @param api
+     * @param inventory
+     * @param items
+     * @return 
+     */
     public static boolean contains(CustomItemsAPI api, ItemStack[] inventory, AnyItemStack ... items)
     {
         HashSet<Integer> marked_indices = new HashSet<>();
@@ -47,6 +58,14 @@ public class InventoryHelper
         return true;
     }
     
+    
+    /**
+     * Returns true if the given inventory matches exactly given item stacks. Accepts duplicate item stacks as input.
+     * @param api
+     * @param inventory
+     * @param items
+     * @return 
+     */
     public static boolean is(CustomItemsAPI api, ItemStack[] inventory, AnyItemStack ... items)
     {
         int inv_count = 0;
@@ -58,6 +77,63 @@ public class InventoryHelper
         }
         
         return items.length == inv_count && contains(api, inventory, items);
+    }
+    
+    
+    /**
+     * Extracts a map of anyItem to a list of ItemStacks of this AnyItem
+     * @param api
+     * @param inventory
+     * @return 
+     */
+    public static HashMap<AnyItem, List<ItemStack>> extractAnyItemStacks(CustomItemsAPI api, ItemStack[] inventory)
+    {
+        HashMap<AnyItem, List<ItemStack>> result = new HashMap<>();
+        
+        for(ItemStack stack : inventory)
+        {
+            if(stack != null)
+            {
+                AnyItem ai = api.getAnyItem(stack);
+                
+                if(!result.containsKey(ai))
+                    result.put(ai, new ArrayList<>());
+                
+                result.get(ai).add(stack);
+            }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Returns true if the list of item stacks contains only one stack of given amount
+     * @param stacks
+     * @param amount
+     * @return 
+     */
+    public static boolean isOneStackOf(Collection<ItemStack> stacks, int amount)
+    {
+        return stacks.size() == 1 && stacks.iterator().next().getAmount() == amount;
+    }
+    
+    /**
+     * If the list of item stacks contains only one stack of given amount, return the stack. otherwise return null.
+     * @param stacks
+     * @param amount
+     * @return 
+     */
+    public static ItemStack getOneStackOf(Collection<ItemStack> stacks, int amount)
+    {
+        if(stacks.size() == 1)
+        {
+            ItemStack stack = stacks.iterator().next();
+            
+            if(stack.getAmount() == amount)
+                return stack;
+        }
+        
+        return null;
     }
     
     /**

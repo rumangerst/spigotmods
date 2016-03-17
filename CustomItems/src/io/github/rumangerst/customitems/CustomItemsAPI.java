@@ -218,6 +218,35 @@ public class CustomItemsAPI
     }
     
     /**
+     * Returns AnyItem from item stack
+     * @param stack
+     * @return 
+     */
+    public AnyItem getAnyItem(ItemStack stack)
+    {
+        CustomItem item = getCustomItem(stack);
+        
+        if(item != null)
+        {
+            return new AnyItem(item.id);
+        }
+        else
+        {
+            return new AnyItem(stack.getType(), stack.getData());
+        }
+    }
+    
+    /**
+     * Returns AnyItemStack from item stack. Will not copy metadata!
+     * @param stack 
+     * @return  
+     */
+    public AnyItemStack getAnyItemStack(ItemStack stack)
+    {
+        return new AnyItemStack(getAnyItem(stack), stack.getAmount());
+    }
+    
+    /**
      * Applies vanilla item override to a stack.
      * Won't happen if stack has a name
      * @param stack 

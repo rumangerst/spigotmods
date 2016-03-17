@@ -5,6 +5,7 @@
  */
 package io.github.rumangerst.customitems;
 
+import java.util.Objects;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -59,5 +60,29 @@ public class AnyItemStack
     public boolean is(CustomItemsAPI api, ItemStack stack)
     {
         return stack != null && stack.getAmount() == amount && type.isOf(api, stack);
+    }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if(o instanceof AnyItemStack)
+        {
+            AnyItemStack os = (AnyItemStack)o;
+            
+            return os.amount == amount && os.type.equals(type);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 3;
+        hash = 67 * hash + Objects.hashCode(this.type);
+        hash = 67 * hash + this.amount;
+        return hash;
     }
 }

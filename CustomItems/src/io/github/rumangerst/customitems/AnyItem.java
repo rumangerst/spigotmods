@@ -5,6 +5,7 @@
  */
 package io.github.rumangerst.customitems;
 
+import java.util.Objects;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -102,5 +103,39 @@ public class AnyItem
             return vanillamaterial + ":" + vanilladata;
         else
             return customitem;
+    }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if(o instanceof AnyItem)
+        {
+            AnyItem oi = (AnyItem)o;
+            
+            if(oi.isVanilla() != isVanilla())
+                return false;
+            if(oi.isVanilla())
+            {
+                return oi.vanillamaterial == vanillamaterial && oi.vanilladata == vanilladata;
+            }
+            else
+            {
+                return customitem.equals(oi.customitem);
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 13 * hash + Objects.hashCode(this.customitem);
+        hash = 13 * hash + Objects.hashCode(this.vanillamaterial);
+        hash = 13 * hash + this.vanilladata;
+        return hash;
     }
 }

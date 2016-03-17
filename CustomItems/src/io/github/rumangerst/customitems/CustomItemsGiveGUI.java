@@ -135,6 +135,12 @@ public class CustomItemsGiveGUI implements CommandExecutor, Listener
         
         ArrayList<Inventory> invs = search_inventories.get(search);
         
+        if(invs.isEmpty())
+        {
+            player.sendMessage("Nothing to show.");
+            return;
+        }
+        
         if(index >= 0)
             index = index % (invs.size());
         else

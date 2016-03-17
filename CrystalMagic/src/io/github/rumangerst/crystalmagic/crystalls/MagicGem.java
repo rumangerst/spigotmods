@@ -79,7 +79,8 @@ public class MagicGem extends CustomItem
     
     public void putElement(ItemStack stack, String elementid, int level)
     {
-        NBTAPI.setInt(stack, "crystalmagic/elements/" + elementid, level);
+        NBTAPI.setInt(stack, "crystalmagic/elements/" + elementid, level);        
+        transform(stack);
     }
     
     public int getLevel(ItemStack stack)
@@ -90,6 +91,7 @@ public class MagicGem extends CustomItem
     public void setLevel(ItemStack stack, int value)
     {
         NBTAPI.setInt(stack, "crystalmagic/level", value);
+        transform(stack);
     }
     
     public ItemStack make(int amount, int level)

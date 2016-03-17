@@ -39,6 +39,7 @@ public class ReactiveGemRecipe extends MagicRecipe
         AnyItemStack ingredient_diamond = new AnyItemStack(new AnyItem(Material.DIAMOND), 1);
         AnyItemStack ingredient_emerlad = new AnyItemStack(new AnyItem(Material.EMERALD), 1);
         AnyItemStack ingredient_lapis = new AnyItemStack(new AnyItem(Material.INK_SACK, (byte)4), 1);
+        AnyItemStack ingredient_quartz = new AnyItemStack(new AnyItem(Material.QUARTZ), 1);
         AnyItemStack ingredient_gold = new AnyItemStack(new AnyItem(Material.GOLD_INGOT), 1);
         
         ReactiveGem gem = null;
@@ -54,6 +55,10 @@ public class ReactiveGemRecipe extends MagicRecipe
         else if(InventoryHelper.is(api, items.getContents(), ingredient_lapis, ingredient_gold))
         {
             gem = (ReactiveGem)api.getCustomItem("magicreactivelapis");
+        }
+        else if(InventoryHelper.is(api, items.getContents(), ingredient_quartz, ingredient_gold))
+        {
+            gem = (ReactiveGem)api.getCustomItem("magicreactivequartz");
         }
         
         if(gem != null)

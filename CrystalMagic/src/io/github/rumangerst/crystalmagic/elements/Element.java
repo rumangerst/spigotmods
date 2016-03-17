@@ -30,7 +30,8 @@ public class Element extends CustomItem
     {
         super.transform(stack);
         
-        NBTAPI.setString(stack, "display/Name", "Element: " + names[0]);
+        NBTAPI.setString(stack, "display/Name", "Element: " + getNameForLevel(getLevel(stack)));
+        NBTAPI.setStringList(stack, "display/Lore", "Level " + getLevel(stack));
     }
     
     public boolean canEnchant()
@@ -60,5 +61,25 @@ public class Element extends CustomItem
     public void execute(Entity caster, int level)
     {
         
+    }
+    
+    public String getNameForLevel(int level)
+    {
+        --level;
+        
+        if(level < 0 || level >= names.length)
+            return names[0];
+        else
+            return names[level];
+    }
+    
+    public int getLevel(ItemStack stack)
+    {
+        return Math.max(1, Math.min(4, NBTAPI.getInt(stack, "crystalmagic/level", 0)));
+    }
+    
+    public void setLevel(ItemStack stack, int value)
+    {
+        NBTAPI.setInt(stack, "crystalmagic/level", value);
     }
 }

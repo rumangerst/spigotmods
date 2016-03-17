@@ -42,8 +42,9 @@ public class MagicCrystalRecipe extends MagicRecipe
         AnyItemStack ingredient_diamond = new AnyItemStack(new AnyItem("magicmagicdiamond"), 1);
         AnyItemStack ingredient_emerlad = new AnyItemStack(new AnyItem("magicmagicemerald"), 1);
         AnyItemStack ingredient_lapis = new AnyItemStack(new AnyItem("magicmagiclapis"), 1); 
+        AnyItemStack ingredient_quartz = new AnyItemStack(new AnyItem("magicmagicquartz"), 1); 
         
-        if(InventoryHelper.is(api, items.getContents(), ingredient_diamond, ingredient_emerlad, ingredient_lapis))
+        if(InventoryHelper.is(api, items.getContents(), ingredient_diamond, ingredient_emerlad, ingredient_lapis, ingredient_quartz))
         {
             // Find minimum level of target item
             for(ItemStack content : items.getContents())

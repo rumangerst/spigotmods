@@ -10,6 +10,7 @@ import io.github.rumangerst.crystalmagic.MagicWorld;
 import io.github.rumangerst.crystalmagic.elements.Element;
 import io.github.rumangerst.customitems.CustomItem;
 import io.github.rumangerst.customitems.CustomItemsAPI;
+import io.github.rumangerst.customitems.helpers.InventoryHelper;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -17,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -90,9 +92,58 @@ public class ReactiveGem extends MagicGem
     
     protected void fill(Player player)
     {
+        String dst = "";
         
+        switch(getId())
+        {
+            case "magicreactiveemerald":
+                dst = "magicmagicemerald";
+                break;
+            case "magicreactivediamond":
+                dst = "magicmagicdiamond";
+                break;
+            case "magicreactivelapis":
+                dst = "magicmagiclapis";
+                break;
+            case "magicreactivequartz":
+                dst = "magicmagicquartz";
+                break;
+            case "magiccollectoremerald":
+                dst = "magicmagicemerald";
+                break;
+            case "magiccollectordiamond":
+                dst = "magicmagicdiamond";
+                break;
+            case "magiccollectorlapis":
+                dst = "magicmagiclapis";
+                break;
+            case "magiccollectorquartz":
+                dst = "magicmagicquartz";
+                break;
+        }
         
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 2.0f);
+        if(!dst.isEmpty())
+        {
+            ItemStack stack = player.getInventory().getItemInMainHand();
+            
+            InventoryHelper.makeAmount(player, stack, 1);
+            
+            MagicGem srcgem = (MagicGem)CustomItemsAPI.api(plugin).getCustomItem(stack);
+            MagicGem gem = (MagicGem)CustomItemsAPI.api(plugin).getCustomItem(dst);
+            gem.transform(stack);
+            
+            Element elem = diceElement(player.getLocation());
+            
+            if(elem != null)
+            {
+                int max_level = srcgem.getLevel(stack);
+                int level = 1 + CrystalMagicPlugin.RANDOM.nextInt(max_level);
+                
+                gem.putElement(stack, elem.getId(), level);
+            }
+            
+            player.getWorld().playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 2.0f);
+        }
     }
     
     public void prepareFill(Player player)
@@ -112,7 +163,7 @@ public class ReactiveGem extends MagicGem
     {
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR)
         {
-            if(isOf(event.getItem()))
+            if(isOf(event.getPlayer().getInventory().getItemInMainHand()))
             {
                 Player player = event.getPlayer();
                 prepareFill(player);

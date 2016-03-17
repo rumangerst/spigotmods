@@ -5,19 +5,26 @@
  */
 package io.github.rumangerst.crystalmagic.elements;
 
-import io.github.rumangerst.crystalmagic.CrystalMagicPlugin;
+import io.github.rumangerst.customitems.CustomItemsAPI;
+import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 /**
  *
  * @author ruman
  */
-public class LightningElement extends Element
+public class WaterElement extends Element
 {
     
-    public LightningElement(String id, String description, String... name)
+    public WaterElement(String id, String description, String... name)
     {
         super(id, description, name);
     }
@@ -60,32 +67,19 @@ public class LightningElement extends Element
     
     @Override
     public void execute(Entity caster, int level)
-    {       
-        for(int i = 1; i <= level; ++i)
+    {      
+        int radius = level * 2;
+        
+        for(Entity e : caster.getNearbyEntities(radius, radius, radius))
         {
-           Location loc;
-           
-           if(i == 1)
-           {
-               loc = caster.getLocation();
-           }
-           else
-           {
-               loc = caster.getLocation().clone();               
-               loc.add(( 0.5 - CrystalMagicPlugin.RANDOM.nextDouble() ) * 2.0, 0, ( 0.5 - CrystalMagicPlugin.RANDOM.nextDouble() ) * 2.0);
-           }
-            
-            if(level >= 1)
+            if(e instanceof LivingEntity)
             {
-                caster.getWorld().strikeLightning(Element.getGroundBlockLocation(loc));
-
-                if(level >= 2)
-                {
-                    caster.getWorld().createExplosion(Element.getGroundBlockLocation(loc), 2.0f, false);
-                }
+                LivingEntity p = (LivingEntity)e;
+                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, CustomItemsAPI.secondsToTicks(level * 5), level));
             }
         }
+        
+        //caster.getWorld().playEffect(caster.getLocation(), Effect.POTION_BREAK, new PotionData(PotionType.SLOWNESS).getType().getEffectType().);
     }
-    
     
 }

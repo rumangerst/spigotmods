@@ -9,7 +9,9 @@ import io.github.rumangerst.crystalmagic.CrystalMagicPlugin;
 import io.github.rumangerst.customitems.CustomItem;
 import io.github.rumangerst.customitems.CustomItemsAPI;
 import io.github.rumangerst.customitems.nbt.NBTAPI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -30,8 +32,8 @@ public class MagicGem extends CustomItem
     @Override
     public void transform(ItemStack stack)
     {
-        lore = makeLore(stack).split("\n");        
-        super.transform(stack);
+        super.transform(stack);        
+        NBTAPI.setStringList(stack, "display/Lore", makeLore(stack).split("\n"));
     }
     
     protected String makeLore(ItemStack stack)
@@ -61,7 +63,7 @@ public class MagicGem extends CustomItem
         
         return lore;
     }
-    
+                
     public HashMap<String, Integer> getElements(ItemStack stack)
     {
         HashMap<String, Integer> data = new HashMap<>();

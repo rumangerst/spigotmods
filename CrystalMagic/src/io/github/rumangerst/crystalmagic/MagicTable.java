@@ -12,8 +12,12 @@ import io.github.rumangerst.crystalmagic.patterns.SealBalanceSmall;
 import io.github.rumangerst.crystalmagic.patterns.SealOrderSmall;
 import io.github.rumangerst.crystalmagic.recipes.CollectorGemRecipe;
 import io.github.rumangerst.crystalmagic.recipes.ElementExtractionRecipe;
+import io.github.rumangerst.crystalmagic.recipes.MagicCrystalCollectorRecipe;
 import io.github.rumangerst.crystalmagic.recipes.MagicCrystalElementRecipe;
+import io.github.rumangerst.crystalmagic.recipes.MagicCrystalInstantRecipe;
+import io.github.rumangerst.crystalmagic.recipes.MagicCrystalProjectileRecipe;
 import io.github.rumangerst.crystalmagic.recipes.MagicCrystalRecipe;
+import io.github.rumangerst.crystalmagic.recipes.MagicGemRecipe;
 import io.github.rumangerst.crystalmagic.recipes.ReactiveGemRecipe;
 import io.github.rumangerst.crystalmagic.spells.MagicTableSpell;
 import java.util.ArrayList;
@@ -97,10 +101,14 @@ public class MagicTable implements Listener
     private void initializeRecipes()
     {
         recipes.add(new ReactiveGemRecipe(plugin));
+        recipes.add(new MagicGemRecipe(plugin));
         recipes.add(new CollectorGemRecipe(plugin));
-        recipes.add(new MagicCrystalRecipe(plugin));
-        recipes.add(new MagicCrystalElementRecipe(plugin));
         recipes.add(new ElementExtractionRecipe(plugin));
+        recipes.add(new MagicCrystalRecipe(plugin));
+        recipes.add(new MagicCrystalCollectorRecipe(plugin));
+        recipes.add(new MagicCrystalElementRecipe(plugin));       
+        recipes.add(new MagicCrystalProjectileRecipe(plugin));
+        recipes.add(new MagicCrystalInstantRecipe(plugin));
     }
     
     @EventHandler

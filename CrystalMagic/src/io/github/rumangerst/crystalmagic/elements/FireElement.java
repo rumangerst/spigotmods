@@ -7,6 +7,8 @@ package io.github.rumangerst.crystalmagic.elements;
 
 import io.github.rumangerst.crystalmagic.CrystalMagicPlugin;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
@@ -14,10 +16,10 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author ruman
  */
-public class LightningElement extends Element
+public class FireElement extends Element
 {
     
-    public LightningElement(String id, String description, String... name)
+    public FireElement(String id, String description, String... name)
     {
         super(id, description, name);
     }
@@ -60,32 +62,22 @@ public class LightningElement extends Element
     
     @Override
     public void execute(Entity caster, int level)
-    {       
-        for(int i = 1; i <= level; ++i)
+    {      
+        caster.getWorld().playSound(caster.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1.0f, 0.2f);
+        
+        for (int x = caster.getLocation().getBlockX() - level - 1; x <= caster.getLocation().getBlockX() + level - 1; ++x)
         {
-           Location loc;
-           
-           if(i == 1)
-           {
-               loc = caster.getLocation();
-           }
-           else
-           {
-               loc = caster.getLocation().clone();               
-               loc.add(( 0.5 - CrystalMagicPlugin.RANDOM.nextDouble() ) * 2.0, 0, ( 0.5 - CrystalMagicPlugin.RANDOM.nextDouble() ) * 2.0);
-           }
-            
-            if(level >= 1)
+            for (int z = caster.getLocation().getBlockZ() - level - 1; z <= caster.getLocation().getBlockZ() + level - 1; ++z)
             {
-                caster.getWorld().strikeLightning(Element.getGroundBlockLocation(loc));
+                Location loc = new Location(caster.getWorld(), x, caster.getLocation().getY(), z);
+                loc = Element.getGroundBlockLocation(loc).add(0, 1, 0);
 
-                if(level >= 2)
+                if (loc.getBlock().getType() == Material.AIR)
                 {
-                    caster.getWorld().createExplosion(Element.getGroundBlockLocation(loc), 2.0f, false);
+                    loc.getBlock().setType(Material.FIRE);
                 }
             }
-        }
+        }        
     }
-    
     
 }

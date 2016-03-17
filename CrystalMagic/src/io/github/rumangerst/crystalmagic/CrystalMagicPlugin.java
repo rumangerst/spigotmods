@@ -10,6 +10,12 @@ import io.github.rumangerst.crystalmagic.crystalls.MagicCrystal;
 import io.github.rumangerst.crystalmagic.crystalls.MagicGem;
 import io.github.rumangerst.crystalmagic.crystalls.ReactiveGem;
 import io.github.rumangerst.crystalmagic.elements.Element;
+import io.github.rumangerst.crystalmagic.elements.FireElement;
+import io.github.rumangerst.crystalmagic.elements.InversionElement;
+import io.github.rumangerst.crystalmagic.elements.LifeElement;
+import io.github.rumangerst.crystalmagic.elements.LightningElement;
+import io.github.rumangerst.crystalmagic.elements.MagicElement;
+import io.github.rumangerst.crystalmagic.elements.WaterElement;
 import io.github.rumangerst.crystalmagic.spells.SpellHandler;
 import io.github.rumangerst.customitems.CustomItem;
 import io.github.rumangerst.customitems.CustomItemsAPI;
@@ -111,7 +117,7 @@ public class CrystalMagicPlugin extends JavaPlugin implements Listener
         
         //Magic crystals
         api.registerItem(this, new MagicCrystal("magicmagiccrystal", "Magischer Kristall", this));
-        //api.registerItem(this, new MagicCrystal("magicmagiccollectorcrystal", "Magischer Sammlerkristall"));
+        api.registerItem(this, new MagicGem("magicmagiccollectorcrystal", Material.NETHER_STAR, (byte)0, "Magischer Sammlerkristall", this));
         //api.registerItem(this, new MagicElementCrystal("magicmagicelementcrystal", "Magischer Elementkristall (Konduktor)"));
         //api.registerItem(this, new MagicElementCrystal("magicmagicelementinstantcrystal", "Magischer Elementkristall (Speicher)"));
         //api.registerItem(this, new MagicElementProjectileCrystal("magicmagicprojectileelementcrystal", "Magischer Projektilelementkristall (Konduktor)", this));
@@ -123,23 +129,23 @@ public class CrystalMagicPlugin extends JavaPlugin implements Listener
         CustomItemsAPI api = CustomItemsAPI.api(this);
         
         // Basic elements
-        api.registerItem(this, new Element("magicfireelement", "Kerze", "Fackel", "Kamin", "Inferno"));
-        api.registerItem(this, new Element("magicwaterelement", "Brise", "Wind", "Sturm", "Leere"));
-        api.registerItem(this, new Element("magiclifeelement", "Wiese", "Wald", "Quelle", "Leben"));
-        api.registerItem(this, new Element("magicmagicelement", "Quartz", "Smaragd", "Diamant", "Kristall"));
-        api.registerItem(this, new Element("magicinversionelement", "Sonnenblume", "Schneeflocke", "Welle", "Fraktal"));
+        api.registerItem(this, new FireElement("magicfireelement", "Zündet das Ziel an", "Kerze", "Fackel", "Kamin", "Inferno"));
+        api.registerItem(this, new WaterElement("magicwaterelement", "Verlangsamt das Ziel", "Brise", "Wind", "Sturm", "Leere"));
+        api.registerItem(this, new LifeElement("magiclifeelement", "Heilt das Ziel", "Wiese", "Wald", "Quelle", "Leben"));
+        api.registerItem(this, new MagicElement("magicmagicelement", "Stößt das Ziel weg", "Quartz", "Smaragd", "Diamant", "Kristall"));
+        api.registerItem(this, new InversionElement("magicinversionelement", "Beschwört eine Kreatur", "Sonnenblume", "Schneeflocke", "Welle", "Fraktal"));
         
         //Derived elements
-        api.registerItem(this, new Element("magicthornselement", "Igel"));
-        api.registerItem(this, new Element("magicfireprotectionelement", "Frosch"));
-        api.registerItem(this, new Element("magicfeatherfallelement", "Vogel"));
-        api.registerItem(this, new Element("magicexplosionprotectionelement", "Fels"));
-        api.registerItem(this, new Element("magicprojectileprotectionelement", "Obsidian"));
-        api.registerItem(this, new Element("magicunderwaterbreathingelement", "Fisch"));
-        api.registerItem(this, new Element("magicboltelement", "Himmel"));
-        api.registerItem(this, new Element("magicexplosionelement", "Wut"));
-        api.registerItem(this, new Element("magicshieldelement", "Schildkröte"));
-        api.registerItem(this, new Element("magicfocuscollectionelement", "Kristall"));
-        api.registerItem(this, new Element("magiclevitationelement", "Wolke"));
+        api.registerItem(this, new Element("magicthornselement", "Schild, der Angreifern schadet", "Igel"));
+        api.registerItem(this, new Element("magicfireprotectionelement", "Feuerschild", "Frosch"));
+        api.registerItem(this, new Element("magicfeatherfallelement", "Verringert Fallschaden des Ziels", "Vogel"));
+        api.registerItem(this, new Element("magicexplosionprotectionelement", "Verringert Schaden durch Explosionen", "Fels"));
+        api.registerItem(this, new Element("magicprojectileprotectionelement", "Verringert Schaden durch Projektile", "Obsidian"));
+        api.registerItem(this, new Element("magicunderwaterbreathingelement", "Das Ziel kann länger unter Wasser atmen", "Fisch"));
+        api.registerItem(this, new LightningElement("magicboltelement", "Schleudert einen Blitz auf das Ziel", "Himmel"));
+        api.registerItem(this, new Element("magicexplosionelement", "Erschafft eine Explosion beim Ziel", "Wut"));
+        api.registerItem(this, new Element("magicshieldelement", "Schild", "Schildkröte"));
+        //api.registerItem(this, new Element("magicfocuscollectionelement", "", "Kristall"));
+        api.registerItem(this, new Element("magiclevitationelement", "Lässt das Ziel nach oben schweben", "Wolke"));
     }    
 }

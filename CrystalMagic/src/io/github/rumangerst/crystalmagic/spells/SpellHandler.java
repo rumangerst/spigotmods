@@ -38,6 +38,8 @@ public class SpellHandler implements Listener, Runnable
         
         if(spell != null)
         {
+            CrystalMagicPlugin.LOGGER.info("Executing spell " + spell + " for player " + player);
+            
             spell.execute();
             spells.remove(player);
         }

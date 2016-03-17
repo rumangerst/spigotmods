@@ -11,13 +11,11 @@ import io.github.rumangerst.crystalmagic.MagicTable;
 import io.github.rumangerst.crystalmagic.crystalls.MagicCrystal;
 import io.github.rumangerst.crystalmagic.crystalls.MagicGem;
 import io.github.rumangerst.customitems.AnyItem;
-import io.github.rumangerst.customitems.AnyItemStack;
 import io.github.rumangerst.customitems.CustomItem;
 import io.github.rumangerst.customitems.CustomItemsAPI;
 import io.github.rumangerst.customitems.helpers.InventoryHelper;
 import java.util.HashMap;
 import java.util.List;
-import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,10 +23,10 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author ruman
  */
-public class MagicCrystalRecipe extends MagicRecipe
+public class MagicCrystalCollectorRecipe extends MagicRecipe
 {
 
-    public MagicCrystalRecipe(CrystalMagicPlugin plugin)
+    public MagicCrystalCollectorRecipe(CrystalMagicPlugin plugin)
     {
         super(plugin);
     }
@@ -36,18 +34,24 @@ public class MagicCrystalRecipe extends MagicRecipe
     @Override
     public boolean execute(Inventory items, MagicTable.Seal seal, MagicTable.Modus modus, int level)
     {
-        if(seal != MagicTable.Seal.Order || modus != MagicTable.Modus.Closed)
+        if(seal != MagicTable.Seal.Balance || modus != MagicTable.Modus.Closed)
             return false;
         
-        CustomItemsAPI api = CustomItemsAPI.api(plugin);       
+        CustomItemsAPI api = CustomItemsAPI.api(plugin);
         
-        AnyItemStack ingredient_diamond = new AnyItemStack(new AnyItem("magicmagicdiamond"), 1);
-        AnyItemStack ingredient_emerlad = new AnyItemStack(new AnyItem("magicmagicemerald"), 1);
-        AnyItemStack ingredient_lapis = new AnyItemStack(new AnyItem("magicmagiclapis"), 1); 
-        AnyItemStack ingredient_quartz = new AnyItemStack(new AnyItem("magicmagicquartz"), 1); 
+        HashMap<AnyItem, List<ItemStack>> contents = InventoryHelper.extractAnyItemStacks(api, items.getContents());
         
-        if(InventoryHelper.is(api, items.getContents(), ingredient_diamond, ingredient_emerlad, ingredient_lapis, ingredient_quartz))
+        if(contents.size() != 3)
+            return false;
+        
+        ItemStack magic_crystal_stack = InventoryHelper.getOneStackOf(contents.get(new AnyItem("magicmagiccrystal")), 1);
+        ItemStack emerald_stack = InventoryHelper.getOneStackOf(contents.get(new AnyItem("magicreactiveemerald")), 1);
+        ItemStack element_stack = InventoryHelper.getOneStackOf(contents.get(new AnyItem("magicmagicelement")), 1);
+        
+        if(magic_crystal_stack != null && emerald_stack != null && element_stack != null)
         {
+            MagicGem crystal = (MagicGem)api.getCustomItem("magicmagiccollectorcrystal");
+                        
             // Find minimum level of target item
             for(ItemStack content : items.getContents())
             {
@@ -57,17 +61,17 @@ public class MagicCrystalRecipe extends MagicRecipe
                     
                     if(ci instanceof MagicGem)
                     {
-                        MagicGem gem = (MagicGem)ci;
-                        level = Math.min(gem.getLevel(content), level);
+                        MagicGem g = (MagicGem)ci;
+                        level = Math.min(g.getLevel(content), level);
                     }
                 }
             }
             
-            //Clear and push output
             items.clear();
             
-            MagicCrystal type = (MagicCrystal)api.getCustomItem("magicmagiccrystal");
-            items.addItem(type.make(1, level));
+            ItemStack collector_crystal_stack = crystal.make(1);            
+            crystal.setLevel(collector_crystal_stack, level);            
+            items.addItem(collector_crystal_stack);
             
             return true;
         }

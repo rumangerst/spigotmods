@@ -64,6 +64,7 @@ public class ReactiveGemRecipe extends MagicRecipe
         if(gem != null)
         {
             items.clear();
+            
             items.addItem(gem.make(1, level));
             
             return true;

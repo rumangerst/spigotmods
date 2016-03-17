@@ -34,7 +34,7 @@ public class ElementExtractionRecipe extends MagicRecipe
     @Override
     public boolean execute(Inventory items, MagicTable.Seal seal, MagicTable.Modus modus, int level)
     {
-        if(seal != MagicTable.Seal.Balance && modus != MagicTable.Modus.Filter)
+        if(seal != MagicTable.Seal.Balance && modus != MagicTable.Modus.Open)
             return false;
         
         CustomItemsAPI api = CustomItemsAPI.api(plugin);

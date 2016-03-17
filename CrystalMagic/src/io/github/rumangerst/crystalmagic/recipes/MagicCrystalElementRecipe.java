@@ -9,6 +9,7 @@ import io.github.rumangerst.crystalmagic.CrystalMagicPlugin;
 import io.github.rumangerst.crystalmagic.MagicRecipe;
 import io.github.rumangerst.crystalmagic.MagicTable;
 import io.github.rumangerst.crystalmagic.crystalls.MagicCrystal;
+import io.github.rumangerst.crystalmagic.crystalls.MagicGem;
 import io.github.rumangerst.crystalmagic.elements.Element;
 import io.github.rumangerst.customitems.CustomItem;
 import io.github.rumangerst.customitems.CustomItemsAPI;
@@ -31,7 +32,7 @@ public class MagicCrystalElementRecipe extends MagicRecipe
     @Override
     public boolean execute(Inventory items, MagicTable.Seal seal, MagicTable.Modus modus, int level)
     {
-        if(seal != MagicTable.Seal.Balance || modus != MagicTable.Modus.Filter)
+        if(seal != MagicTable.Seal.Order || modus != MagicTable.Modus.Filter)
             return false;
         
         CustomItemsAPI api = CustomItemsAPI.api(plugin);
@@ -57,6 +58,7 @@ public class MagicCrystalElementRecipe extends MagicRecipe
                         return false;
                     
                     crystal_stack = content;
+                    level = Math.min(level, ((MagicGem)ci).getLevel(content));
                 }
                 else if(ci.getId().equals("magicreactivequartz"))
                 {
@@ -64,6 +66,7 @@ public class MagicCrystalElementRecipe extends MagicRecipe
                         return false;
                     
                     quartz_stack = content;
+                    level = Math.min(level, ((MagicGem)ci).getLevel(content));
                 }
                 else if(ci instanceof Element)
                 {

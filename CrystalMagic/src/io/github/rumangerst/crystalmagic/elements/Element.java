@@ -7,6 +7,7 @@ package io.github.rumangerst.crystalmagic.elements;
 
 import io.github.rumangerst.customitems.CustomItem;
 import io.github.rumangerst.customitems.nbt.NBTAPI;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
@@ -18,11 +19,13 @@ import org.bukkit.inventory.ItemStack;
 public class Element extends CustomItem
 {
     private String[] names;
+    private String description;
     
-    public Element(String id, String ... name)
+    public Element(String id, String description, String ... name)
     {
         super(id, Material.BLAZE_POWDER, (byte)0, name[0]);
         names = name;
+        this.description = description;
     }
     
     @Override
@@ -31,7 +34,7 @@ public class Element extends CustomItem
         super.transform(stack);
         
         NBTAPI.setString(stack, "display/Name", "Element: " + getNameForLevel(getLevel(stack)));
-        NBTAPI.setStringList(stack, "display/Lore", "Level " + getLevel(stack));
+        NBTAPI.setStringList(stack, "display/Lore", description, "Level " + getLevel(stack));
     }
     
     public boolean canEnchant()
@@ -83,11 +86,48 @@ public class Element extends CustomItem
         NBTAPI.setInt(stack, "crystalmagic/level", value);
     }
     
+    /**
+     * Returns the spell level from mana input
+     * @param mana
+     * @return 
+     */
+    public int getLevelFromMana(int mana)
+    {
+        if(mana < getManaCost(1))
+            return 0;
+        else if(mana < getManaCost(2))
+            return 1;
+        else if(mana < getManaCost(3))
+            return 2;
+        else if(mana < getManaCost(4))
+            return 3;
+        else
+            return 4;
+    }
+    
+    public int getManaCost(int level)
+    {
+        return level;
+    }
+    
     public ItemStack make(int amount, int level)
     {
         ItemStack stack = make(amount);
         setLevel(stack, level);
         
         return stack;
+    }
+    
+    public static Location getGroundBlockLocation(Location loc)
+    {
+        for(int y = loc.getBlockY(); y >= 0; --y)
+        {
+            loc.setY(y);
+            
+            if(loc.getBlock().getType() != Material.AIR)
+                return loc;
+        }
+        
+        return loc;
     }
 }

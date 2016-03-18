@@ -28,10 +28,7 @@ import org.bukkit.inventory.ItemStack;
 public class CustomItemsGiveGUI implements CommandExecutor, Listener
 {
     private CustomItemsAPI api;
-    private HashMap<String, ArrayList<Inventory>> search_inventories = new HashMap<>();
-    private ArrayList<Inventory> managed_inventories = new ArrayList<>();
-    private HashMap<Player, String> player_search = new HashMap<>();
-    private boolean rebuild = true;
+    private HashMap<Player, GiveInventory> player_inventories = new HashMap<>();
     
     public CustomItemsGiveGUI(CustomItemsAPI api)
     {
@@ -40,100 +37,42 @@ public class CustomItemsGiveGUI implements CommandExecutor, Listener
     
     public void rebuildInventory()
     {
-        rebuild = true;
+        player_inventories.clear();
     }
     
-    private void _addNavigation(Inventory inv)
+    private void updateInventory(Player player, String search)
     {
-        ItemStack back = new ItemStack(Material.NETHER_STAR);
-        ItemStack forward = new ItemStack(Material.NETHER_STAR);
+        GiveInventory inv = player_inventories.getOrDefault(player, null);
         
-        NBTAPI.setString(back, "display/Name", "Back");
-        NBTAPI.setString(forward, "display/Name", "Next");
-        
-        inv.setItem(45, back);
-        inv.setItem(53, forward);
+        if(inv == null || !inv.search_string.equals(search.toLowerCase()))
+        {
+            inv = new GiveInventory(search.toLowerCase());
+            player_inventories.put(player, inv);
+        }
     }
     
-    private String _title(String search, int index)
+    private boolean isManagedInventory(Inventory inv)
     {
-        if(search.isEmpty())
-            return "Custom Items (Page " + index + ")";
-        else
-            return "Custom Items \"" + search + "\" (Page " + index + ")";  
-    }
-    
-    private void _rebuildInventory(String search)
-    {
-        search = search.toLowerCase();
-        
-        if(search_inventories.containsKey(search))
+        for(GiveInventory i : player_inventories.values())
         {
-            managed_inventories.removeAll(search_inventories.get(search));            
-            search_inventories.get(search).clear();
-        }
-        else
-        {
-            search_inventories.put(search, new ArrayList<>());
+            if(i.contains(inv))
+                return true;
         }
         
-        ArrayList<Inventory> inventories = search_inventories.get(search);
-        
-        Inventory inv = Bukkit.createInventory(null, 54, _title(search, inventories.size() + 1));        
-        int current_count = 0;
-        
-        ArrayList<CustomItem> items = new ArrayList<>(api.items.values());
-        items.sort(new Comparator<CustomItem>() 
-        {
-            @Override
-            public int compare(CustomItem o1, CustomItem o2)
-            {
-                return o1.id.compareTo(o2.id);
-            }
-            
-        });
-        
-        for(CustomItem item : items)
-        {
-            if(!item.getName().toLowerCase().contains(search) && !item.getId().toLowerCase().contains(search))
-                continue;
-            
-            if(current_count < 45)
-            {            
-                inv.addItem(item.make(1));
-                ++current_count;
-            }
-            else
-            {
-                //Inventory full add navigation.
-                _addNavigation(inv);
-                search_inventories.get(search).add(inv);
-                managed_inventories.add(inv);
-                
-                inv = Bukkit.createInventory(null, 54, _title(search, inventories.size() + 1));
-                current_count = 0;
-            }
-        }
-        
-        if(current_count != 0)
-        {
-            _addNavigation(inv);
-            inventories.add(inv);
-            managed_inventories.add(inv);
-        }
+        return false;
     }
     
     public void showTo(Player player, int index)
     {
-        String search = player_search.getOrDefault(player, "");
+        GiveInventory ginv = player_inventories.getOrDefault(player, null);
         
-        if(rebuild)
-            _rebuildInventory(search);
-        
-        if(search_inventories.isEmpty())
+        if(ginv == null)
+        {
+            player.sendMessage("Nothing to show.");
             return;
+        }
         
-        ArrayList<Inventory> invs = search_inventories.get(search);
+        ArrayList<Inventory> invs = ginv.inventories;
         
         if(invs.isEmpty())
         {
@@ -159,15 +98,14 @@ public class CustomItemsGiveGUI implements CommandExecutor, Listener
             
             if(player.isOp())
             {
-                if(strings.length == 1)
-                {
-                    player_search.put(player, strings[0]);
-                }
-                else
-                {
-                    player_search.remove(player);
-                }
+                String search;
                 
+                if(strings.length == 1)
+                    search = strings[0];
+                else
+                    search = "";
+                
+                updateInventory(player, search);
                 showTo(player, 0);
                 
                 return true;
@@ -180,7 +118,7 @@ public class CustomItemsGiveGUI implements CommandExecutor, Listener
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event)
     {
-        if(event.isLeftClick() && managed_inventories.contains(event.getClickedInventory()))
+        if(event.isLeftClick() && isManagedInventory(event.getClickedInventory()))
         {
             Player player = (Player) event.getWhoClicked(); // The player that clicked the item
             ItemStack clicked = event.getCurrentItem(); // The item that was clicked
@@ -199,10 +137,13 @@ public class CustomItemsGiveGUI implements CommandExecutor, Listener
             }
             else
             {
-                String search = player_search.getOrDefault(player, "");
+                GiveInventory inv = player_inventories.getOrDefault(player, null);
+                
+                if(inv == null)
+                    return;
                 
                 //Navigation items
-                int index = search_inventories.get(search).indexOf(inventory);
+                int index = inv.inventories.indexOf(inventory);
                 
                 if(NBTAPI.getString(clicked, "display/Name", "").equals("Next"))
                 {
@@ -217,6 +158,85 @@ public class CustomItemsGiveGUI implements CommandExecutor, Listener
             }
             
             event.setCancelled(true);
+        }
+    }
+    
+    private class GiveInventory
+    {
+        public ArrayList<Inventory> inventories = new ArrayList<>();
+        public String search_string;
+        
+        public GiveInventory(String search)
+        {
+            this.search_string = search;
+
+            Inventory inv = Bukkit.createInventory(null, 54, title(search, inventories.size() + 1));
+            int current_count = 0;
+
+            ArrayList<CustomItem> items = new ArrayList<>(api.items.values());
+            items.sort(new Comparator<CustomItem>()
+            {
+                @Override
+                public int compare(CustomItem o1, CustomItem o2)
+                {
+                    return o1.id.compareTo(o2.id);
+                }
+
+            });
+
+            for (CustomItem item : items)
+            {
+                if (!item.getName().toLowerCase().contains(search) && !item.getId().toLowerCase().contains(search))
+                {
+                    continue;
+                }
+
+                if (current_count < 45)
+                {
+                    inv.addItem(item.make(1));
+                    ++current_count;
+                }
+                else
+                {
+                    //Inventory full add navigation.
+                    addNavigation(inv);
+                    inventories.add(inv);
+
+                    inv = Bukkit.createInventory(null, 54, title(search, inventories.size() + 1));
+                    current_count = 0;
+                }
+            }
+
+            if (current_count != 0)
+            {
+                addNavigation(inv);
+                inventories.add(inv);
+            }
+        }
+        
+        public boolean contains(Inventory inv)
+        {
+            return inventories.contains(inv);
+        }
+        
+        private String title(String search, int index)
+        {
+            if(search.isEmpty())
+                return "Custom Items (Page " + index + ")";
+            else
+                return "Custom Items \"" + search + "\" (Page " + index + ")";  
+        }
+        
+        private void addNavigation(Inventory inv)
+        {
+            ItemStack back = new ItemStack(Material.NETHER_STAR);
+            ItemStack forward = new ItemStack(Material.NETHER_STAR);
+
+            NBTAPI.setString(back, "display/Name", "Back");
+            NBTAPI.setString(forward, "display/Name", "Next");
+
+            inv.setItem(45, back);
+            inv.setItem(53, forward);
         }
     }
     

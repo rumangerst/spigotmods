@@ -84,6 +84,7 @@ public class Element extends CustomItem
     public void setLevel(ItemStack stack, int value)
     {
         NBTAPI.setInt(stack, "crystalmagic/level", value);
+        transform(stack);
     }
     
     /**

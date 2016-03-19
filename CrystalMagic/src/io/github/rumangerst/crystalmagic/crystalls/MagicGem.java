@@ -6,6 +6,7 @@
 package io.github.rumangerst.crystalmagic.crystalls;
 
 import io.github.rumangerst.crystalmagic.CrystalMagicPlugin;
+import io.github.rumangerst.crystalmagic.elements.Element;
 import io.github.rumangerst.customitems.CustomItem;
 import io.github.rumangerst.customitems.CustomItemsAPI;
 import io.github.rumangerst.customitems.nbt.NBTAPI;
@@ -48,13 +49,20 @@ public class MagicGem extends CustomItem
         {
             lore += "Elemente: ";
             
+            int count = 0;
+            
             for(String element : elements.keySet())
             {
                 CustomItem elementitem = CustomItemsAPI.api(plugin).getCustomItem(element);
                 
                 if(elementitem != null)
-                {
-                    lore += elementitem.getName() + " (" + elements.get(element) + "), ";
+                {      
+                    lore += ((Element)elementitem).getNameForLevel(elements.get(element)) + " (" + elements.get(element) + ")";
+                    
+                    if(++count != elements.keySet().size())
+                    {
+                        lore += ", ";
+                    }
                 }
             }
             

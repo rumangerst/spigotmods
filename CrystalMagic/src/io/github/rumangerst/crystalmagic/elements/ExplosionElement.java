@@ -43,25 +43,31 @@ public class ExplosionElement extends Element
     @Override
     public int getManaCost(int level)
     {
-        switch(level)
-        {
-            case 1:
-                return 10;
-            case 2:
-                return 30;
-            case 3:
-                return 80;
-            case 4:
-                return 180;
-            default:
-                return 1000;
-        }
+        return level * level * 4;
     }
     
     @Override
     public void execute(Entity caster, int level)
     {       
-        caster.getWorld().createExplosion(caster.getLocation(), level, false);
+        float strength = 1.0f;
+        
+        switch(level)
+        {
+            case 1:
+                strength = 2.0f;
+                break;
+            case 2:
+                strength = 4.0f;
+                break;
+            case 3:
+                strength = 6.0f;
+                break;
+            case 4:
+                strength = 8.0f;
+                break;
+        }
+        
+        caster.getWorld().createExplosion(caster.getLocation(), strength, false);
     }
     
     

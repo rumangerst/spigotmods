@@ -43,16 +43,23 @@ public class SpellHandler implements Listener, Runnable
         
         if(spell != null)
         {
-            CrystalMagicPlugin.LOGGER.info("Executing spell " + spell + " for player " + player);
+            //CrystalMagicPlugin.LOGGER.info("Executing spell " + spell + " for player " + player);
+            try
+            {
+                spell.execute();
+            }
+            catch (Exception ex)
+            {
+                CrystalMagicPlugin.LOGGER.severe(ex.getMessage());
+            }
             
-            spell.execute();
             spells.remove(player);
         }
     }
     
     public void spell(Player player, Spell spell)
     {
-        CrystalMagicPlugin.LOGGER.info("Player " + player.getName() + " starts spell " + spell);
+        //CrystalMagicPlugin.LOGGER.info("Player " + player.getName() + " starts spell " + spell);
         
         if(isUsingSpell(player))
         {
@@ -170,6 +177,12 @@ public class SpellHandler implements Listener, Runnable
         {
             Spell spell = spells.getOrDefault(player, null);
             
+            if(!player.isOnline())
+            {
+                spells.remove(player);
+                continue;
+            }
+            
             if(spell != null)
             {
                 if(modifyMana(player, -spell.manaCost()) == 0 || spell.load())
@@ -180,6 +193,8 @@ public class SpellHandler implements Listener, Runnable
                 {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, CustomItemsAPI.secondsToTicks(2), 2));
                 }
+                
+                sendInformation(player);
             }
             else
             {

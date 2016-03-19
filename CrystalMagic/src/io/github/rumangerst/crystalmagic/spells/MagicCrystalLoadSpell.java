@@ -52,7 +52,7 @@ public class MagicCrystalLoadSpell implements Spell
         }
         else
         {
-            load = type.getFocus(stack) + manaCost();
+            load = Math.min(max_load, type.getFocus(stack) + manaCost());
             
             type.setFocus(stack, (int)load); // Push mana into the crystal
             caster.getWorld().playSound(caster.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_HURT, 2.0f, MathHelper.lerp(0.2f, 0.8f, load / type.getMaxFocus(stack)));
@@ -64,25 +64,14 @@ public class MagicCrystalLoadSpell implements Spell
     @Override
     public int manaCost()
     {
-        switch(type.getLevel(stack))
-        {
-            case 1:
-                return 4;
-            case 2:
-                return 8;
-            case 3:
-                return 16;
-            case 4:
-                return 32;
-            default:
-                return 1000;
-        }
+        int level = type.getLevel(stack);        
+        return level * level;
     }
 
     @Override
     public String getStatus()
     {
-        return "Lade Stein auf ... " + (int)load + "/" + (int)max_load + " Fokus";
+        return "Lade Stein auf ... " + (int)load + "/" + (int)max_load + " ✦";
     }
     
 }

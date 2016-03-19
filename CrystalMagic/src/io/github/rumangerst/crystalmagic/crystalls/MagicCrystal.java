@@ -24,7 +24,10 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
+import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -33,6 +36,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.util.Vector;
 
 /**
  *
@@ -78,16 +82,20 @@ public class MagicCrystal extends MagicGem
             }
         }
         
-        List<String> elements = new ArrayList<>(getElements(stack).keySet());
+        HashMap<String, Integer> element_data = getElements(stack);
+        ArrayList<String> element_ids = new ArrayList<>(element_data.keySet());
         
-        if(!elements.isEmpty())
+        if(!element_ids.isEmpty())
         {
-            Collections.sort(elements);            
+            Collections.sort(element_ids);            
             ArrayList<String> elem_names = new ArrayList<>();            
             
-            for(String eid : elements)
+            for(String eid : element_ids)
             {
-                elem_names.add(CustomItemsAPI.api(plugin).getCustomItem(eid).getName().replace("Element: ", ""));
+                Element e = (Element)CustomItemsAPI.api(plugin).getCustomItem(eid);
+                String n = e.getNameForLevel(element_data.get(eid));
+                
+                elem_names.add(n.replace("Element: ", ""));
             }
             
             name += " [" + String.join(", ", elem_names) + "]";
@@ -149,45 +157,77 @@ public class MagicCrystal extends MagicGem
     {
         int level = getLevel(stack);
         
-        switch(level)
-        {
-            case 1:
-                return 20;
-            case 2:
-                return 50;
-            case 3:
-                return 120;
-            case 4:
-                return 240;
-            default:
-                return 0;
-        }
+        return level * level * 20;
     }
     
     private void spawnMagicProjectile(Player player, HashMap<Element, Integer> levels)
     {        
         Location spawnAt = player.getEyeLocation().toVector().add(player.getEyeLocation().getDirection().multiply(2)).toLocation(player.getWorld());
-        player.getWorld().playSound(spawnAt, Sound.ENTITY_LIGHTNING_THUNDER, 1.0f, 2.0f);
-        
-        Fireball entity = (Fireball) player.getWorld().spawnEntity(spawnAt, EntityType.FIREBALL);
+                        
+        /*Fireball entity = (Fireball) player.getWorld().spawnEntity(spawnAt, EntityType.FIREBALL);
         entity.setDirection(player.getEyeLocation().getDirection());
         
-        entity.setMetadata("crystalmagic_projectile", new FixedMetadataValue(plugin, levels));
+        entity.setMetadata("crystalmagic_projectile", new FixedMetadataValue(plugin, levels));*/
+        
+        int weight = 0;
+        
+        for(int lv : levels.values())
+        {
+            if(lv >  weight)
+                weight = lv;
+        }
+        
+        Projectile proj;
+        
+        if(weight <= 1)
+        {
+            proj = player.launchProjectile(Fireball.class);
+            Vector vel = proj.getVelocity().multiply(2.5);
+            proj.setVelocity(vel);
+            
+            player.getWorld().playSound(spawnAt, Sound.ENTITY_FIREWORK_LAUNCH, 1.0f, 0.2f);
+        }
+        else if(weight == 2)
+        {
+            proj = player.launchProjectile(Fireball.class);
+            Vector vel = proj.getVelocity().multiply(2);
+            proj.setVelocity(vel);
+            
+            player.getWorld().playSound(spawnAt, Sound.ITEM_FIRECHARGE_USE, 1.0f, 0.2f);
+        }
+        else if(weight == 3)
+        {
+            proj = player.launchProjectile(Fireball.class);
+            Vector vel = proj.getVelocity().multiply(1.5);
+            proj.setVelocity(vel);
+            
+            player.getWorld().playSound(spawnAt, Sound.ENTITY_WITHER_SHOOT, 1.0f, 0.2f);
+        }
+        else
+        {
+            proj = player.launchProjectile(LargeFireball.class);
+            Vector vel = proj.getVelocity().multiply(1);
+            proj.setVelocity(vel);
+            
+            player.getWorld().playSound(spawnAt, Sound.ENTITY_LIGHTNING_THUNDER, 1.0f, 2.0f);
+        }
+        
+        proj.setMetadata("crystalmagic_projectile", new FixedMetadataValue(plugin, levels));
     }
     
     @EventHandler
     public void triggerMagicProjectile(ExplosionPrimeEvent event)
     {
-        if(event.getEntity().getType() == EntityType.FIREBALL)
+        EntityType type = event.getEntityType();        
+        if(type == EntityType.FIREBALL)
         {
-            event.setRadius(0);
-            event.setCancelled(true);         
-            
-            
             MetadataValue value = NBTAPI.getMetadata(event.getEntity(), "crystalmagic_projectile", plugin);
             
             if(value != null)
             {
+                event.setRadius(0);
+                event.setCancelled(true);         
+                
                 HashMap<Element, Integer> element_levels = (HashMap<Element, Integer>)value.value();
                 executeSpell(event.getEntity(), element_levels);
             }
@@ -197,9 +237,15 @@ public class MagicCrystal extends MagicGem
     @EventHandler
     public void preventMagicProjectileDamage(EntityDamageByEntityEvent event)
     {
-        if(event.getDamager().getType() == EntityType.FIREBALL)
+        EntityType type = event.getEntityType();        
+        if(type == EntityType.FIREBALL)
         {
-            event.setCancelled(true);
+            MetadataValue value = NBTAPI.getMetadata(event.getEntity(), "crystalmagic_projectile", plugin);
+            
+            if(value != null)
+            {
+                event.setCancelled(true);
+            }
         }
     }
     
@@ -235,7 +281,7 @@ public class MagicCrystal extends MagicGem
             Element elem = (Element) api.getCustomItem(elementid);
             int level = elem.getLevelFromMana(mana);
             
-            CrystalMagicPlugin.LOGGER.info("execute spell: " + elem + " lv " + level);
+            //CrystalMagicPlugin.LOGGER.info("execute spell: " + elem + " lv " + level);
 
             if (level > 0)
             {
@@ -294,12 +340,22 @@ public class MagicCrystal extends MagicGem
             {
                 if(isInstant(stack))
                 {
-                    spellLoad(event.getPlayer(), stack);
+                    if(plugin.spellhandler.isUsingSpell(event.getPlayer()))
+                        plugin.spellhandler.executeSpellNow(event.getPlayer());
+                    else
+                        spellLoad(event.getPlayer(), stack);
                 }
             }
             else
             {
-                spellCast(event.getPlayer(), stack);
+                if (plugin.spellhandler.isUsingSpell(event.getPlayer()))
+                {
+                    plugin.spellhandler.executeSpellNow(event.getPlayer());
+                }
+                else
+                {
+                    spellCast(event.getPlayer(), stack);
+                }                
             }
         }
     }

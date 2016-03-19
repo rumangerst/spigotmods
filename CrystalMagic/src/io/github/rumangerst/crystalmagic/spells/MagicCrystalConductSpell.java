@@ -68,25 +68,14 @@ public class MagicCrystalConductSpell implements Spell
     @Override
     public int manaCost()
     {
-        switch(type.getLevel(stack))
-        {
-            case 1:
-                return 4;
-            case 2:
-                return 8;
-            case 3:
-                return 16;
-            case 4:
-                return 32;
-            default:
-                return 1000;
-        }
+        int level = type.getLevel(stack);        
+        return level * level;
     }
 
     @Override
     public String getStatus()
     {
-        return "Leite Magie durch Stein ... " + (int)load + "/" + (int)max_load + " Fokus";
+        return "Leite Magie durch Stein ... " + (int)load + "/" + (int)max_load + " ✦";
     }
     
 }

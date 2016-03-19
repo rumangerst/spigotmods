@@ -57,19 +57,7 @@ public class ProjectileProtectionElement extends Element
     @Override
     public int getManaCost(int level)
     {
-        switch(level)
-        {
-            case 1:
-                return 10;
-            case 2:
-                return 30;
-            case 3:
-                return 80;
-            case 4:
-                return 180;
-            default:
-                return 1000;
-        }
+        return (int)(level * level * 5.6);
     }
     
     @Override

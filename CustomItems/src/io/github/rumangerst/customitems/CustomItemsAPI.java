@@ -15,6 +15,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 import io.github.rumangerst.customitems.recipes.impl.CustomItemRecipeImpl;
+import java.util.Collection;
+import java.util.Set;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -149,6 +151,11 @@ public class CustomItemsAPI
         item_overrides.put(material, item);
     }
     
+    /**
+     * Overrides a vanilla item by a custom item
+     * @param material
+     * @param item 
+     */
     public void registerOverride(Material material, String item)
     {
         if(items.containsKey(item))
@@ -160,7 +167,7 @@ public class CustomItemsAPI
             floating_overrides.put(material, item);
         }
     }
-    
+        
     /**
      * Returns if item is of item described by AnyItem
      * @param stack
@@ -190,6 +197,24 @@ public class CustomItemsAPI
         {
             return false;
         }
+    }
+    
+    /**
+     * Gets all custom item instances
+     * @return 
+     */
+    public Collection<CustomItem> getCustomItems()
+    {
+        return items.values();
+    }
+    
+    /**
+     * Returns all custom item IDs
+     * @return 
+     */
+    public Set<String> getCustomItemIds()
+    {
+        return items.keySet();
     }
     
     /**

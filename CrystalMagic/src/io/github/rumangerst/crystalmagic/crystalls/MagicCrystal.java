@@ -5,6 +5,7 @@
  */
 package io.github.rumangerst.crystalmagic.crystalls;
 
+import com.google.common.collect.Lists;
 import io.github.rumangerst.crystalmagic.CrystalMagicPlugin;
 import io.github.rumangerst.crystalmagic.elements.Element;
 import io.github.rumangerst.crystalmagic.spells.MagicCrystalConductSpell;
@@ -12,7 +13,11 @@ import io.github.rumangerst.crystalmagic.spells.MagicCrystalLoadSpell;
 import io.github.rumangerst.customitems.CustomItem;
 import io.github.rumangerst.customitems.CustomItemsAPI;
 import io.github.rumangerst.customitems.nbt.NBTAPI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -71,6 +76,21 @@ public class MagicCrystal extends MagicGem
             {
                 name += " (Konduktor)";
             }
+        }
+        
+        List<String> elements = new ArrayList<>(getElements(stack).keySet());
+        
+        if(!elements.isEmpty())
+        {
+            Collections.sort(elements);            
+            ArrayList<String> elem_names = new ArrayList<>();            
+            
+            for(String eid : elements)
+            {
+                elem_names.add(CustomItemsAPI.api(plugin).getCustomItem(eid).getName().replace("Element: ", ""));
+            }
+            
+            name += " [" + String.join(", ", elem_names) + "]";
         }
         
         NBTAPI.setString(stack, "display/Name", name);

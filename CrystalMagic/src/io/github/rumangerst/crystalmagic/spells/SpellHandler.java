@@ -5,10 +5,15 @@
  */
 package io.github.rumangerst.crystalmagic.spells;
 
+import com.connorlinfoot.bountifulapi.BountifulAPI;
 import io.github.rumangerst.crystalmagic.CrystalMagicPlugin;
+import io.github.rumangerst.customitems.CustomItemsAPI;
 import java.util.HashMap;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
  *
@@ -55,6 +60,8 @@ public class SpellHandler implements Listener, Runnable
         }
         
         spells.put(player, spell);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, CustomItemsAPI.secondsToTicks(2), 2));
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED, 0.4f, 0.4f);
     }
     
     public boolean isUsingSpell(Player player)
@@ -67,12 +74,49 @@ public class SpellHandler implements Listener, Runnable
         return Math.max(0, plugin.data_storage.getInt(player.getUniqueId().toString() + ".mana", 0));
     }
     
+    public int getMaxMana(Player player)
+    {
+        return plugin.data_storage.getInt(player.getUniqueId().toString() + ".max_mana", 10);
+    }
+    
+    public int getManaRegeneration(Player player)
+    {
+        return 1;
+    }
+    
     public void setMana(Player player, int mana)
     {
-        int max_mana = plugin.data_storage.getInt(player.getUniqueId().toString() + ".max_mana", 10);
+        int max_mana = getMaxMana(player);
         plugin.data_storage.set(player.getUniqueId().toString() + ".mana", Math.min(max_mana, Math.max(0, mana)));
         
-        player.sendMessage("Mana:" + mana);
+        sendInformation(player);
+    }
+    
+    public void sendInformation(Player player)
+    {
+        String data = textProgressBar('✦', '✧', 10, (double)getMana(player) / (double)getMaxMana(player));        
+        
+        Spell spell = spells.getOrDefault(player, null);
+        
+        if(spell != null)
+        {
+            data += " - " + spell.getStatus();
+        }
+        
+        BountifulAPI.sendActionBar(player, data);
+    }
+    
+    public static String textProgressBar(char filled, char unfilled, int length, double value)
+    {
+        String t = "";        
+        int v = (int)(length * value);
+        
+        for(int i = 0; i < v; ++i)
+            t += filled;
+        for(int i = 0; i < length - v; ++i)
+            t += unfilled;
+        
+        return t;
     }
     
     /**
@@ -122,13 +166,33 @@ public class SpellHandler implements Listener, Runnable
     @Override
     public void run()
     {
-        for(Player player : spells.keySet())
+        for(Player player : plugin.getServer().getOnlinePlayers())
         {
-            Spell spell = spells.get(player);
+            Spell spell = spells.getOrDefault(player, null);
             
-            if(modifyMana(player, -spell.manaCost()) == 0 || spell.load())
+            if(spell != null)
             {
-                executeSpellNow(player);
+                if(modifyMana(player, -spell.manaCost()) == 0 || spell.load())
+                {
+                    executeSpellNow(player);
+                }
+                else
+                {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, CustomItemsAPI.secondsToTicks(2), 2));
+                }
+            }
+            else
+            {
+                int old_mana = getMana(player);
+                int new_mana = Math.min(getMaxMana(player), old_mana + getManaRegeneration(player));
+                
+                if(old_mana != new_mana)
+                {
+                    if(CrystalMagicPlugin.RANDOM.nextDouble() < 0.2)
+                        player.setFoodLevel(Math.max(0, player.getFoodLevel() - 1));
+                    
+                    setMana(player, getMana(player) + getManaRegeneration(player));
+                }
             }
         }
     }

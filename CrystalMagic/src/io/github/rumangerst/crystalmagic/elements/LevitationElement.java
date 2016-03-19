@@ -5,24 +5,24 @@
  */
 package io.github.rumangerst.crystalmagic.elements;
 
-import io.github.rumangerst.crystalmagic.CrystalMagicPlugin;
 import io.github.rumangerst.customitems.CustomItemsAPI;
-import org.bukkit.Location;
+import org.bukkit.Effect;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
+import org.bukkit.potion.PotionType;
 
 /**
  *
  * @author ruman
  */
-public class MagicElement extends Element
+public class LevitationElement extends Element
 {
     
-    public MagicElement(String id, String description, String... name)
+    public LevitationElement(String id, String description, String... name)
     {
         super(id, description, name);
     }
@@ -67,51 +67,13 @@ public class MagicElement extends Element
     public void execute(Entity caster, int level)
     {      
         int radius = level * 2;
-        double strength = 0.15;
-        
-        switch(level)
-        {
-            case 1:
-                strength = 1.0;
-                break;
-            case 2:
-                strength = 2.0;
-                break;
-            case 3:
-                strength = 3.5;
-                break;
-            case 4:
-                strength = 4.8;
-                break;
-        }
         
         for(Entity e : caster.getNearbyEntities(radius, radius, radius))
         {
             if(e instanceof LivingEntity)
             {
                 LivingEntity p = (LivingEntity)e;
-                
-                /*Vector velocity = caster.getVelocity();
-                velocity.setY(-velocity.getY());  
-                
-                p.getLocation().getDirection().
-                
-                velocity = velocity.multiply(strength);                
-                p.setVelocity(velocity);*/
-                
-                Vector vel = new Vector(p.getLocation().getX() - caster.getLocation().getX(), 0, p.getLocation().getZ() - caster.getLocation().getZ());
-                
-                if(caster instanceof LivingEntity)
-                {
-                    vel.setY(-caster.getLocation().getDirection().getY());
-                }
-                else
-                {
-                    vel.setY(-caster.getVelocity().getY());
-                }
-                
-                vel = vel.normalize().multiply(strength);
-                e.setVelocity(vel);
+                p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, CustomItemsAPI.secondsToTicks(level * 5), level));
             }
         }
     }

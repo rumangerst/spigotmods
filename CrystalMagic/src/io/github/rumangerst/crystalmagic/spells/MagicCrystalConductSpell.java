@@ -22,8 +22,8 @@ import org.bukkit.inventory.ItemStack;
 public class MagicCrystalConductSpell implements Spell
 {
     CrystalMagicPlugin plugin;
-    double load = 0;
-    double max_load = 0;
+    int load = 0;
+    int max_load = 0;
     Player caster;
     ItemStack stack;
     MagicCrystal type;
@@ -81,6 +81,12 @@ public class MagicCrystalConductSpell implements Spell
             default:
                 return 1000;
         }
+    }
+
+    @Override
+    public String getStatus()
+    {
+        return "Leite Magie durch Stein ... " + (int)load + "/" + (int)max_load + " Fokus";
     }
     
 }

@@ -16,4 +16,5 @@ public interface Spell
     public void execute();
     public boolean load();    
     public int manaCost();
+    public String getStatus();
 }

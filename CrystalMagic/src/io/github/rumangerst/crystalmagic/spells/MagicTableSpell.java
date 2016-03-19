@@ -77,4 +77,10 @@ public class MagicTableSpell implements Spell
         return (int)(load + 1) * (int)(load + 1);
     }
     
+    @Override
+    public String getStatus()
+    {
+        return "Versiegeln ... Level " + (int)load;
+    }
+    
 }

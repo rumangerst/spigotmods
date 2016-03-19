@@ -19,7 +19,8 @@ import org.bukkit.inventory.ItemStack;
 public class MagicCrystalLoadSpell implements Spell
 {
     CrystalMagicPlugin plugin;
-    double load = 0;
+    int load = 0;
+    int max_load = 0;
     Player caster;
     ItemStack stack;
     MagicCrystal type;
@@ -30,6 +31,8 @@ public class MagicCrystalLoadSpell implements Spell
         this.caster = caster;
         this.stack = stack;
         this.type = type;
+        
+        max_load = type.getMaxFocus(stack);
     }
     
     @Override
@@ -49,7 +52,9 @@ public class MagicCrystalLoadSpell implements Spell
         }
         else
         {
-            type.setFocus(stack, type.getFocus(stack) + manaCost()); // Push mana into the crystal
+            load = type.getFocus(stack) + manaCost();
+            
+            type.setFocus(stack, (int)load); // Push mana into the crystal
             caster.getWorld().playSound(caster.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_HURT, 2.0f, MathHelper.lerp(0.2f, 0.8f, load / type.getMaxFocus(stack)));
             
             return false;
@@ -72,6 +77,12 @@ public class MagicCrystalLoadSpell implements Spell
             default:
                 return 1000;
         }
+    }
+
+    @Override
+    public String getStatus()
+    {
+        return "Lade Stein auf ... " + (int)load + "/" + (int)max_load + " Fokus";
     }
     
 }

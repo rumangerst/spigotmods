@@ -10,11 +10,20 @@ import io.github.rumangerst.crystalmagic.crystalls.MagicCrystal;
 import io.github.rumangerst.crystalmagic.crystalls.MagicGem;
 import io.github.rumangerst.crystalmagic.crystalls.ReactiveGem;
 import io.github.rumangerst.crystalmagic.elements.Element;
+import io.github.rumangerst.crystalmagic.elements.ExplosionElement;
+import io.github.rumangerst.crystalmagic.elements.ExplosionShieldElement;
+import io.github.rumangerst.crystalmagic.elements.FeatherfallElement;
 import io.github.rumangerst.crystalmagic.elements.FireElement;
+import io.github.rumangerst.crystalmagic.elements.FireProtectionElement;
 import io.github.rumangerst.crystalmagic.elements.InversionElement;
+import io.github.rumangerst.crystalmagic.elements.LevitationElement;
 import io.github.rumangerst.crystalmagic.elements.LifeElement;
 import io.github.rumangerst.crystalmagic.elements.LightningElement;
 import io.github.rumangerst.crystalmagic.elements.MagicElement;
+import io.github.rumangerst.crystalmagic.elements.ProjectileProtectionElement;
+import io.github.rumangerst.crystalmagic.elements.ShieldElement;
+import io.github.rumangerst.crystalmagic.elements.ThornsElement;
+import io.github.rumangerst.crystalmagic.elements.UnderwaterBreathingElement;
 import io.github.rumangerst.crystalmagic.elements.WaterElement;
 import io.github.rumangerst.crystalmagic.spells.SpellHandler;
 import io.github.rumangerst.customitems.CustomItem;
@@ -136,16 +145,16 @@ public class CrystalMagicPlugin extends JavaPlugin implements Listener
         api.registerItem(this, new InversionElement("magicinversionelement", "Beschwört eine Kreatur", "Sonnenblume", "Schneeflocke", "Welle", "Fraktal"));
         
         //Derived elements
-        api.registerItem(this, new Element("magicthornselement", "Schild, der Angreifern schadet", "Igel"));
-        api.registerItem(this, new Element("magicfireprotectionelement", "Feuerschild", "Frosch"));
-        api.registerItem(this, new Element("magicfeatherfallelement", "Verringert Fallschaden des Ziels", "Vogel"));
-        api.registerItem(this, new Element("magicexplosionprotectionelement", "Verringert Schaden durch Explosionen", "Fels"));
-        api.registerItem(this, new Element("magicprojectileprotectionelement", "Verringert Schaden durch Projektile", "Obsidian"));
-        api.registerItem(this, new Element("magicunderwaterbreathingelement", "Das Ziel kann länger unter Wasser atmen", "Fisch"));
+        api.registerItem(this, new ThornsElement("magicthornselement", "Schild, der Angreifern schadet", "Igel"));
+        api.registerItem(this, new FireProtectionElement("magicfireprotectionelement", "Feuerschild", "Frosch"));
+        api.registerItem(this, new FeatherfallElement("magicfeatherfallelement", "Verringert Fallschaden des Ziels", "Vogel"));
+        api.registerItem(this, new ExplosionShieldElement("magicexplosionprotectionelement", "Verringert Schaden durch Explosionen", "Fels"));
+        api.registerItem(this, new ProjectileProtectionElement("magicprojectileprotectionelement", "Verringert Schaden durch Projektile", "Obsidian"));
+        api.registerItem(this, new UnderwaterBreathingElement("magicunderwaterbreathingelement", "Das Ziel kann länger unter Wasser atmen", "Fisch"));
         api.registerItem(this, new LightningElement("magicboltelement", "Schleudert einen Blitz auf das Ziel", "Himmel"));
-        api.registerItem(this, new Element("magicexplosionelement", "Erschafft eine Explosion beim Ziel", "Wut"));
-        api.registerItem(this, new Element("magicshieldelement", "Schild", "Schildkröte"));
+        api.registerItem(this, new ExplosionElement("magicexplosionelement", "Erschafft eine Explosion beim Ziel", "Wut"));
+        api.registerItem(this, new ShieldElement("magicshieldelement", "Schild", "Schildkröte"));
         //api.registerItem(this, new Element("magicfocuscollectionelement", "", "Kristall"));
-        api.registerItem(this, new Element("magiclevitationelement", "Lässt das Ziel nach oben schweben", "Wolke"));
+        api.registerItem(this, new LevitationElement("magiclevitationelement", "Lässt das Ziel nach oben schweben", "Wolke"));
     }    
 }

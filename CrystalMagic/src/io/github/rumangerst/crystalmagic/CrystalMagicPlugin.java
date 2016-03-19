@@ -52,6 +52,8 @@ public class CrystalMagicPlugin extends JavaPlugin implements Listener
     
     public FileConfiguration data_storage;
     
+    private CrystalMagicGiveGUI givegui;
+    
     public CrystalMagicPlugin()
     {
         LOGGER = new PluginLogger(this);        
@@ -79,6 +81,11 @@ public class CrystalMagicPlugin extends JavaPlugin implements Listener
         getServer().getPluginManager().registerEvents(spellhandler, this);   
         
         getServer().getScheduler().runTaskTimer(this, spellhandler, CustomItemsAPI.secondsToTicks(1), CustomItemsAPI.secondsToTicks(1));
+        
+        givegui = new CrystalMagicGiveGUI(CustomItemsAPI.api(this));
+        getCommand("crystalmagicgive").setExecutor(givegui);
+        
+        getServer().getPluginManager().registerEvents(givegui, this);
     }
     
     @Override
@@ -157,4 +164,5 @@ public class CrystalMagicPlugin extends JavaPlugin implements Listener
         //api.registerItem(this, new Element("magicfocuscollectionelement", "", "Kristall"));
         api.registerItem(this, new LevitationElement("magiclevitationelement", "Lässt das Ziel nach oben schweben", "Wolke"));
     }    
+    
 }

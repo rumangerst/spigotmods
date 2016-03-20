@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
@@ -53,20 +54,35 @@ public class WaterElement extends Element
         return (int)(level * level * 2.5);
     }
     
+    private void execute(LivingEntity target, int level)
+    {
+        target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, CustomItemsAPI.secondsToTicks(level * 5), level));
+        //target.addPotionEffect(new PotionEffect(PotionEffectType.POISON, CustomItemsAPI.secondsToTicks(level * 3), level));
+        
+        target.setFireTicks(0); // stops fire
+    }
+    
     @Override
     public void execute(Entity caster, int level)
     {      
-        int radius = level * 2;
-        
-        for(Entity e : caster.getNearbyEntities(radius, radius, radius))
+        if(caster instanceof Player)
         {
-            if(e instanceof LivingEntity)
+            execute((Player)caster, level);
+        }
+        else
+        {
+            double radius = level + 0.8;
+            Element.playRadiusEffect(caster, level, Effect.SPELL, 0);
+
+            for(Entity e : caster.getNearbyEntities(radius, radius, radius))
             {
-                LivingEntity p = (LivingEntity)e;
-                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, CustomItemsAPI.secondsToTicks(level * 5), level));
+                if(e instanceof LivingEntity)
+                {
+                    LivingEntity p = (LivingEntity)e;
+                    execute(p, level);
+                }
             }
         }
-        
         //caster.getWorld().playEffect(caster.getLocation(), Effect.POTION_BREAK, new PotionData(PotionType.SLOWNESS).getType().getEffectType().);
     }
     

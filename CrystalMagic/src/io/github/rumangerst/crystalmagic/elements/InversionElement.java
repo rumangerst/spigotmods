@@ -65,13 +65,11 @@ public class InversionElement extends Element
         return (int)(level * level * 7.0);
     }
     
-    @Override
-    public void execute(Entity caster, int level)
-    { 
-            Location loc = caster.getLocation();
-            //loc.add((0.5 - CrystalMagicPlugin.RANDOM.nextDouble()) * 2.0, 0, (0.5 - CrystalMagicPlugin.RANDOM.nextDouble()) * 2.0);
-            
-            switch(level)
+    private void execute(Location loc, int level)
+    {
+        loc.add((0.5 - CrystalMagicPlugin.RANDOM.nextDouble()) * 2.0, 0, (0.5 - CrystalMagicPlugin.RANDOM.nextDouble()) * 2.0);
+        
+        switch(level)
             {
                 case 1:
                     loc.getWorld().spawnEntity(loc, spawn_level1[CrystalMagicPlugin.RANDOM.nextInt(spawn_level1.length)]);
@@ -86,8 +84,20 @@ public class InversionElement extends Element
                     loc.getWorld().spawnEntity(loc, spawn_level4[CrystalMagicPlugin.RANDOM.nextInt(spawn_level4.length)]);
                     break;
             }
-            
-            caster.getWorld().playSound(caster.getLocation(), Sound.BLOCK_PORTAL_TRIGGER, 0.5f, 2.0f);
+    }
+    
+    @Override
+    public void execute(Entity caster, int level)
+    { 
+        Location loc = caster.getLocation();
+        //loc.add((0.5 - CrystalMagicPlugin.RANDOM.nextDouble()) * 2.0, 0, (0.5 - CrystalMagicPlugin.RANDOM.nextDouble()) * 2.0);
+
+        for (int i = 0; i < level; ++i)
+        {
+            execute(loc.clone(), level);
+        }
+
+        caster.getWorld().playSound(caster.getLocation(), Sound.BLOCK_PORTAL_TRIGGER, 0.5f, 2.0f);
         
     }
     

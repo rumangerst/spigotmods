@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -30,6 +31,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -177,42 +179,48 @@ public class MagicCrystal extends MagicGem
                 weight = lv;
         }
         
-        Projectile proj;
+        //Projectile proj;
+        //Fireball entity;
+        double vel;
+        
+        Fireball entity = (Fireball) player.getWorld().spawnEntity(spawnAt, EntityType.FIREBALL);
+        entity.setDirection(player.getEyeLocation().getDirection());
         
         if(weight <= 1)
         {
-            proj = player.launchProjectile(Fireball.class);
-            Vector vel = proj.getVelocity().multiply(2.5);
-            proj.setVelocity(vel);
+            //proj = player.launchProjectile(Fireball.class);
+            //entity = (Fireball)proj;
+            vel = 2.5;
             
             player.getWorld().playSound(spawnAt, Sound.ENTITY_FIREWORK_LAUNCH, 1.0f, 0.2f);
         }
         else if(weight == 2)
         {
-            proj = player.launchProjectile(Fireball.class);
-            Vector vel = proj.getVelocity().multiply(2);
-            proj.setVelocity(vel);
+            //proj = player.launchProjectile(Fireball.class);
+            //entity = (Fireball)proj;
+            vel = 2.0;
             
             player.getWorld().playSound(spawnAt, Sound.ITEM_FIRECHARGE_USE, 1.0f, 0.2f);
         }
         else if(weight == 3)
         {
-            proj = player.launchProjectile(Fireball.class);
-            Vector vel = proj.getVelocity().multiply(1.5);
-            proj.setVelocity(vel);
+            //proj = player.launchProjectile(Fireball.class);
+            //entity = (Fireball)proj;
+            vel = 1.5;
             
             player.getWorld().playSound(spawnAt, Sound.ENTITY_WITHER_SHOOT, 1.0f, 0.2f);
         }
         else
         {
-            proj = player.launchProjectile(LargeFireball.class);
-            Vector vel = proj.getVelocity().multiply(1);
-            proj.setVelocity(vel);
+            //proj = player.launchProjectile(LargeFireball.class);
+            //entity = (Fireball)proj;
+            vel = 1;
             
             player.getWorld().playSound(spawnAt, Sound.ENTITY_LIGHTNING_THUNDER, 1.0f, 2.0f);
         }
         
-        proj.setMetadata("crystalmagic_projectile", new FixedMetadataValue(plugin, levels));
+        entity.setDirection(entity.getDirection().multiply(vel));        
+        entity.setMetadata("crystalmagic_projectile", new FixedMetadataValue(plugin, levels));
     }
     
     @EventHandler
@@ -244,7 +252,7 @@ public class MagicCrystal extends MagicGem
             
             if(value != null)
             {
-                event.setCancelled(true);
+                event.setDamage(0);
             }
         }
     }
@@ -357,6 +365,15 @@ public class MagicCrystal extends MagicGem
                     spellCast(event.getPlayer(), stack);
                 }                
             }
+        }
+    }
+    
+    @EventHandler
+    public void preventBreaking(BlockBreakEvent event)
+    {
+        if(!event.isCancelled() && event.getPlayer().getGameMode() == GameMode.CREATIVE && isOf(event.getPlayer().getInventory().getItemInMainHand()))
+        {
+            event.setCancelled(true);
         }
     }
 }

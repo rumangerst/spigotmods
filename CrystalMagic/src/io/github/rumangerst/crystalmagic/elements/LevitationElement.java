@@ -54,7 +54,8 @@ public class LevitationElement extends Element
     @Override
     public void execute(Entity caster, int level)
     {      
-        int radius = level * 2;
+        double radius = level + 0.8;
+        LevitationElement.playRadiusEffect(caster, level, Effect.MOBSPAWNER_FLAMES, 0);
         
         for(Entity e : caster.getNearbyEntities(radius, radius, radius))
         {
@@ -64,7 +65,7 @@ public class LevitationElement extends Element
                 p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, CustomItemsAPI.secondsToTicks(level * 5), level));
                 
             }
-        }        
+        }  
     }
     
 }

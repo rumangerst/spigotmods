@@ -60,7 +60,7 @@ public class FireElement extends Element
                 Location loc = new Location(caster.getWorld(), x, caster.getLocation().getY(), z);
                 loc = Element.getGroundBlockLocation(loc).add(0, 1, 0);
 
-                if (loc.getBlock().getType() == Material.AIR)
+                if (loc.getBlock().getType() == Material.AIR && CrystalMagicPlugin.RANDOM.nextDouble() < 0.4)
                 {
                     loc.getBlock().setType(Material.FIRE);
                 }

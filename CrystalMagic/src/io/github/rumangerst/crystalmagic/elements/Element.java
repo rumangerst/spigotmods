@@ -5,8 +5,10 @@
  */
 package io.github.rumangerst.crystalmagic.elements;
 
+import io.github.rumangerst.crystalmagic.CrystalMagicPlugin;
 import io.github.rumangerst.customitems.CustomItem;
 import io.github.rumangerst.customitems.nbt.NBTAPI;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -130,5 +132,22 @@ public class Element extends CustomItem
         }
         
         return loc;
+    }
+    
+    public static void playRadiusEffect(Entity caster, int radius, Effect effect, int effectdata)
+    {
+        for (int x = caster.getLocation().getBlockX() - radius - 1; x <= caster.getLocation().getBlockX() + radius - 1; ++x)
+        {
+            for (int z = caster.getLocation().getBlockZ() - radius - 1; z <= caster.getLocation().getBlockZ() + radius - 1; ++z)
+            {
+                Location loc = new Location(caster.getWorld(), x, caster.getLocation().getY(), z);
+                loc = Element.getGroundBlockLocation(loc).add(0, 1, 0);
+
+                if (loc.getBlock().getType() == Material.AIR && CrystalMagicPlugin.RANDOM.nextDouble() < 0.4)
+                {
+                    loc.getWorld().playEffect(loc, effect, effectdata);
+                }
+            }
+        }        
     }
 }

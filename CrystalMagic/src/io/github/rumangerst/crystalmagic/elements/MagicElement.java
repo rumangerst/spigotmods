@@ -7,6 +7,7 @@ package io.github.rumangerst.crystalmagic.elements;
 
 import io.github.rumangerst.crystalmagic.CrystalMagicPlugin;
 import io.github.rumangerst.customitems.CustomItemsAPI;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -54,7 +55,9 @@ public class MagicElement extends Element
     @Override
     public void execute(Entity caster, int level)
     {      
-        int radius = level * 2;
+        double radius = level + 0.8;
+        Element.playRadiusEffect(caster, level, Effect.MAGIC_CRIT, 0);
+        
         double strength = 0.15;
         
         switch(level)
@@ -75,7 +78,7 @@ public class MagicElement extends Element
         
         for(Entity e : caster.getNearbyEntities(radius, radius, radius))
         {
-            if(e instanceof LivingEntity)
+            if(e instanceof LivingEntity && e != caster)
             {
                 LivingEntity p = (LivingEntity)e;
                 

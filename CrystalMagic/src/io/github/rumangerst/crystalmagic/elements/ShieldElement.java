@@ -60,21 +60,34 @@ public class ShieldElement extends Element
         return (int)(level * level * 4.0);
     }
     
+    private void execute(LivingEntity target, int level)
+    {
+        effect_duration.put(target, System.currentTimeMillis() + level * 5000);
+        effect_level.put(target, level);
+    }
+    
     @Override
     public void execute(Entity caster, int level)
     {      
-        int radius = level * 2;
-        
-        for(Entity e : caster.getNearbyEntities(radius, radius, radius))
+        if(caster instanceof Player)
         {
-            if(e instanceof LivingEntity)
+            execute((Player)caster, level);
+        }
+        else
+        {
+            double radius = level + 0.8;
+            Element.playRadiusEffect(caster, level, Effect.CRIT, 0);
+
+            for(Entity e : caster.getNearbyEntities(radius, radius, radius))
             {
-                LivingEntity p = (LivingEntity)e;
-                
-                effect_duration.put(p, System.currentTimeMillis() + level * 5000);
-                effect_level.put(p, level);
+                if(e instanceof LivingEntity)
+                {
+                    LivingEntity p = (LivingEntity)e;
+                    execute(p, level);
+                }
             }
         }
+        //caster.getWorld().playEffect(caster.getLocation(), Effect.POTION_BREAK, new PotionData(PotionType.SLOWNESS).getType().getEffectType().);
     }
     
     @EventHandler

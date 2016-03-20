@@ -9,6 +9,7 @@ import io.github.rumangerst.customitems.CustomItemsAPI;
 import org.bukkit.Effect;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
@@ -51,22 +52,35 @@ public class LifeElement extends Element
         return (int)(level * level * 3.5);
     }
     
+    private void execute(LivingEntity target, int level)
+    {
+        target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, CustomItemsAPI.secondsToTicks(level * 5), level));
+        target.setHealth(Math.min(target.getMaxHealth(), target.getHealth() + level));
+
+        target.getWorld().playEffect(target.getLocation(), Effect.HEART, 0);
+    }
+    
     @Override
     public void execute(Entity caster, int level)
     {      
-        int radius = level * 2;
-        
-        for(Entity e : caster.getNearbyEntities(radius, radius, radius))
+        if(caster instanceof Player)
         {
-            if(e instanceof LivingEntity)
+            execute((Player)caster, level);
+        }
+        else
+        {
+            int radius = level;
+
+            for(Entity e : caster.getNearbyEntities(radius, radius, radius))
             {
-                LivingEntity p = (LivingEntity)e;
-                p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, CustomItemsAPI.secondsToTicks(level * 5), level));
-                p.setHealth(Math.min(p.getMaxHealth(), p.getHealth() + level));          
-                
-                p.getWorld().playEffect(p.getLocation(), Effect.HEART, 0);
+                if(e instanceof LivingEntity)
+                {
+                    LivingEntity p = (LivingEntity)e;
+                    execute(p, level);
+                }
             }
         }
+        //caster.getWorld().playEffect(caster.getLocation(), Effect.POTION_BREAK, new PotionData(PotionType.SLOWNESS).getType().getEffectType().);
     }
     
 }

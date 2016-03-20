@@ -194,7 +194,7 @@ public class CrystalMagicGiveGUI implements CommandExecutor, Listener
                         //Add for all elements of this level
                         // Add projectile or non projectile
                         
-                        for(int mod = 0; mod <= 4; ++mod)
+                        for(int mod = 0; mod < 4; ++mod)
                         {
                             boolean instant = (mod & 1) == 1;
                             boolean projectile = (mod & 2) == 2;                            

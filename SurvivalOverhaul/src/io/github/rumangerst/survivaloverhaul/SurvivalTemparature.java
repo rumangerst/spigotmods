@@ -61,6 +61,12 @@ public class SurvivalTemparature
         daynighttemparature *= playerblock.getLightFromSky() / 15.0; //Caves etc do not affect daynight temparature
         biometemparature *= playerblock.getLightFromSky() / 15.0; 
         
+        // If you are in daylight, positive height temparature has no effect
+        if(heighttemparature > 0)
+        {
+            heighttemparature *= 1.0 - (playerblock.getLightFromSky() / 15.0);
+        }
+        
         double temp = 25 + heighttemparature + biometemparature + firetemparature + daynighttemparature + weathertemparature;        
         temp = Math.max(-50, Math.min(50, temp));
         

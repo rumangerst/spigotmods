@@ -1,0 +1,8 @@
+name: DynamicMusic
+main: io.github.rumangerst.dynamicmusic.DynamicMusicPlugin
+version: 1.0
+commands:
+    music:
+        usage: /music enable/disable/reload
+        description: Enables music/disables music/reloads configuration
+

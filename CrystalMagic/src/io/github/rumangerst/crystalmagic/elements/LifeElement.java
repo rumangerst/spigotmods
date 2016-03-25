@@ -35,7 +35,7 @@ public class LifeElement extends Element
     }
     
     @Override
-    public void enchant(ItemStack stack)
+    public void enchant(ItemStack stack, int level)
     {
         
     }
@@ -55,7 +55,7 @@ public class LifeElement extends Element
     private void execute(LivingEntity target, int level)
     {
         target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, CustomItemsAPI.secondsToTicks(level * 5), level));
-        target.setHealth(Math.min(target.getMaxHealth(), target.getHealth() + level));
+        //target.setHealth(Math.min(target.getMaxHealth(), target.getHealth() + level));
 
         target.getWorld().playEffect(target.getLocation(), Effect.HEART, 0);
     }

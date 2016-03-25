@@ -9,6 +9,7 @@ import io.github.rumangerst.crystalmagic.CrystalMagicPlugin;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
@@ -27,13 +28,16 @@ public class FireElement extends Element
     @Override
     public boolean canEnchant()
     {
-        return false;
+        return true;
     }
     
     @Override
-    public void enchant(ItemStack stack)
+    public void enchant(ItemStack stack, int level)
     {
-        
+        if(level > 0)
+        {
+            stack.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, level);
+        }
     }
     
     @Override

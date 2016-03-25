@@ -6,9 +6,8 @@
 package io.github.rumangerst.crystalmagic.elements;
 
 import io.github.rumangerst.customitems.CustomItemsAPI;
+import java.util.ArrayList;
 import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -22,10 +21,10 @@ import org.bukkit.potion.PotionType;
  *
  * @author ruman
  */
-public class WaterElement extends Element
+public class DetoxElement extends Element
 {
     
-    public WaterElement(String id, String description, String... name)
+    public DetoxElement(String id, String description, String... name)
     {
         super(id, description, name);
     }
@@ -33,7 +32,7 @@ public class WaterElement extends Element
     @Override
     public boolean canEnchant()
     {
-        return true;
+        return false;
     }
     
     @Override
@@ -51,15 +50,42 @@ public class WaterElement extends Element
     @Override
     public int getManaCost(int level)
     {
-        return (int)(level * level * 2.5);
+        return (int)(level * level * 5.0);
     }
     
     private void execute(LivingEntity target, int level)
     {
-        target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, CustomItemsAPI.secondsToTicks(level * 5), level));
-        //target.addPotionEffect(new PotionEffect(PotionEffectType.POISON, CustomItemsAPI.secondsToTicks(level * 3), level));
-        
-        target.setFireTicks(0); // stops fire
+        if(level > 0)
+        {
+            target.removePotionEffect(PotionEffectType.SPEED);
+            target.removePotionEffect(PotionEffectType.SLOW);
+            
+            if(level > 1)
+            {
+                target.removePotionEffect(PotionEffectType.SATURATION);
+                target.removePotionEffect(PotionEffectType.HUNGER);
+                target.removePotionEffect(PotionEffectType.LEVITATION);
+                
+                if(level > 2)
+                {
+                    target.removePotionEffect(PotionEffectType.REGENERATION);
+                    target.removePotionEffect(PotionEffectType.POISON);
+                    target.removePotionEffect(PotionEffectType.GLOWING);
+                    
+                    if(level > 3)
+                    {
+                        ArrayList<PotionEffect> e = new ArrayList<>(target.getActivePotionEffects());
+                        
+                        for(PotionEffect i : e)
+                        {
+                            target.removePotionEffect(i.getType());
+                        }
+                    }
+                }
+            }
+        }
+
+        target.getWorld().playEffect(target.getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
     }
     
     @Override
@@ -71,8 +97,7 @@ public class WaterElement extends Element
         }
         else
         {
-            double radius = level + 0.8;
-            Element.playRadiusEffect(caster, level, Effect.SPELL, 0);
+            int radius = level;
 
             for(Entity e : caster.getNearbyEntities(radius, radius, radius))
             {

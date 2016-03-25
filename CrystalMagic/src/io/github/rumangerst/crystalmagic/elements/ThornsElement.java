@@ -9,6 +9,7 @@ import io.github.rumangerst.customitems.CustomItemsAPI;
 import java.util.HashMap;
 import org.bukkit.Effect;
 import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -39,13 +40,16 @@ public class ThornsElement extends Element
     @Override
     public boolean canEnchant()
     {
-        return false;
+        return true;
     }
     
     @Override
-    public void enchant(ItemStack stack)
+    public void enchant(ItemStack stack, int level)
     {
-        
+        if(level > 0)
+        {
+            stack.addUnsafeEnchantment(Enchantment.THORNS, level);
+        }
     }
     
     @Override

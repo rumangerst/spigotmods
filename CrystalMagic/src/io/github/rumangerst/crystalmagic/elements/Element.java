@@ -53,7 +53,7 @@ public class Element extends CustomItem
      * Enchants an itemstack
      * @param stack 
      */
-    public void enchant(ItemStack stack)
+    public void enchant(ItemStack stack, int level)
     {
         
     }

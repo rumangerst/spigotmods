@@ -48,7 +48,7 @@ public class InversionElement extends Element
     }
     
     @Override
-    public void enchant(ItemStack stack)
+    public void enchant(ItemStack stack, int level)
     {
         
     }

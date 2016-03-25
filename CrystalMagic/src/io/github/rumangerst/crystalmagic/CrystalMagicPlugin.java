@@ -9,6 +9,8 @@ import io.github.rumangerst.crystalmagic.crystalls.CollectorGem;
 import io.github.rumangerst.crystalmagic.crystalls.MagicCrystal;
 import io.github.rumangerst.crystalmagic.crystalls.MagicGem;
 import io.github.rumangerst.crystalmagic.crystalls.ReactiveGem;
+import io.github.rumangerst.crystalmagic.elements.DetoxElement;
+import io.github.rumangerst.crystalmagic.elements.DisarmElement;
 import io.github.rumangerst.crystalmagic.elements.Element;
 import io.github.rumangerst.crystalmagic.elements.ExplosionElement;
 import io.github.rumangerst.crystalmagic.elements.ExplosionShieldElement;
@@ -147,7 +149,7 @@ public class CrystalMagicPlugin extends JavaPlugin implements Listener
         // Basic elements
         api.registerItem(this, new FireElement("magicfireelement", "Zündet das Ziel an", "Kerze", "Fackel", "Kamin", "Inferno"));
         api.registerItem(this, new WaterElement("magicwaterelement", "Verlangsamt das Ziel", "Brise", "Wind", "Sturm", "Leere"));
-        api.registerItem(this, new LifeElement("magiclifeelement", "Heilt das Ziel", "Wiese", "Wald", "Quelle", "Leben"));
+        api.registerItem(this, new LifeElement("magiclifeelement", "Heilt das Ziel langsam", "Wiese", "Wald", "Quelle", "Leben"));
         api.registerItem(this, new MagicElement("magicmagicelement", "Stößt das Ziel weg", "Quartz", "Smaragd", "Diamant", "Kristall"));
         api.registerItem(this, new InversionElement("magicinversionelement", "Beschwört eine Kreatur", "Sonnenblume", "Schneeflocke", "Welle", "Fraktal"));
         
@@ -163,6 +165,10 @@ public class CrystalMagicPlugin extends JavaPlugin implements Listener
         api.registerItem(this, new ShieldElement("magicshieldelement", "Schild", "Schildkröte"));
         //api.registerItem(this, new Element("magicfocuscollectionelement", "", "Kristall"));
         api.registerItem(this, new LevitationElement("magiclevitationelement", "Lässt das Ziel nach oben schweben", "Wolke"));
+        
+        api.registerItem(this, new LifeElement("magichealelement", "Heilt das Ziel sofort", "Kräuter"));
+        api.registerItem(this, new DetoxElement("magicdetoxelement", "Entfernt Effekte", "Milch"));
+        api.registerItem(this, new DisarmElement("magicdisarmelement", "Entwaffnet Ziel", "Erosion"));
     }    
     
 }

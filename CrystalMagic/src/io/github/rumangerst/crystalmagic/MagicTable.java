@@ -13,6 +13,7 @@ import io.github.rumangerst.crystalmagic.patterns.SealOrderSmall;
 import io.github.rumangerst.crystalmagic.recipes.CollectorGemRecipe;
 import io.github.rumangerst.crystalmagic.recipes.ElementExtractionRecipe;
 import io.github.rumangerst.crystalmagic.recipes.ElementRecipe;
+import io.github.rumangerst.crystalmagic.recipes.EnchantRecipe;
 import io.github.rumangerst.crystalmagic.recipes.MagicCrystalCollectorRecipe;
 import io.github.rumangerst.crystalmagic.recipes.MagicCrystalElementRecipe;
 import io.github.rumangerst.crystalmagic.recipes.MagicCrystalInstantRecipe;
@@ -111,6 +112,7 @@ public class MagicTable implements Listener
         recipes.add(new MagicCrystalProjectileRecipe(plugin));
         recipes.add(new MagicCrystalInstantRecipe(plugin));
         recipes.add(new ElementRecipe(plugin));
+        recipes.add(new EnchantRecipe(plugin));
     }
     
     @EventHandler

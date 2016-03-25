@@ -7,8 +7,6 @@ package io.github.rumangerst.crystalmagic.elements;
 
 import io.github.rumangerst.customitems.CustomItemsAPI;
 import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -22,10 +20,10 @@ import org.bukkit.potion.PotionType;
  *
  * @author ruman
  */
-public class WaterElement extends Element
+public class HealElement extends Element
 {
     
-    public WaterElement(String id, String description, String... name)
+    public HealElement(String id, String description, String... name)
     {
         super(id, description, name);
     }
@@ -33,7 +31,7 @@ public class WaterElement extends Element
     @Override
     public boolean canEnchant()
     {
-        return true;
+        return false;
     }
     
     @Override
@@ -51,15 +49,15 @@ public class WaterElement extends Element
     @Override
     public int getManaCost(int level)
     {
-        return (int)(level * level * 2.5);
+        return (int)(level * level * 4.0);
     }
     
     private void execute(LivingEntity target, int level)
     {
-        target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, CustomItemsAPI.secondsToTicks(level * 5), level));
-        //target.addPotionEffect(new PotionEffect(PotionEffectType.POISON, CustomItemsAPI.secondsToTicks(level * 3), level));
-        
-        target.setFireTicks(0); // stops fire
+        target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, CustomItemsAPI.secondsToTicks(level * 2), level));
+        target.setHealth(Math.min(target.getMaxHealth(), target.getHealth() + level * 2));
+
+        target.getWorld().playEffect(target.getLocation(), Effect.HEART, 0);
     }
     
     @Override
@@ -71,8 +69,7 @@ public class WaterElement extends Element
         }
         else
         {
-            double radius = level + 0.8;
-            Element.playRadiusEffect(caster, level, Effect.SPELL, 0);
+            int radius = level;
 
             for(Entity e : caster.getNearbyEntities(radius, radius, radius))
             {

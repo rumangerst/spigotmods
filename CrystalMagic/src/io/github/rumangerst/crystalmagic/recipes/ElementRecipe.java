@@ -74,6 +74,12 @@ public class ElementRecipe extends MagicRecipe
         AnyItemStack ingredient_reactive_lapis = new AnyItemStack(new AnyItem("magicreactivelapis"), 1);
         AnyItemStack ingredient_feather = new AnyItemStack(new AnyItem(Material.FEATHER), 1);
         
+        AnyItemStack ingredient_orchid = new AnyItemStack(new AnyItem(Material.RED_ROSE, (byte)1), 1);
+        AnyItemStack ingredient_allium = new AnyItemStack(new AnyItem(Material.RED_ROSE, (byte)2), 1);
+        AnyItemStack ingredient_daisy = new AnyItemStack(new AnyItem(Material.RED_ROSE, (byte)8), 1);
+        AnyItemStack ingredient_sunflower = new AnyItemStack(new AnyItem(Material.DOUBLE_PLANT, (byte)0), 1);
+        AnyItemStack ingredient_milk = new AnyItemStack(new AnyItem(Material.MILK_BUCKET, (byte)0), 1);
+        
         if(InventoryHelper.is(api, items.getContents(), ingredient_shield, ingredient_life, ingredient_inversion))
         {
             if(seal != MagicTable.Seal.Order && modus != MagicTable.Modus.Closed)
@@ -144,6 +150,28 @@ public class ElementRecipe extends MagicRecipe
             
             result = (Element)api.getCustomItem("magiclevitationelement");
         }
+        else if(InventoryHelper.is(api, items.getContents(), ingredient_life, ingredient_allium, ingredient_orchid))
+        {
+            if(seal != MagicTable.Seal.Order && modus != MagicTable.Modus.Filter)
+                return false;
+            
+            result = (Element)api.getCustomItem("magichealelement");
+        }
+        else if(InventoryHelper.is(api, items.getContents(), ingredient_life, ingredient_daisy, ingredient_milk, ingredient_sunflower))
+        {
+            if(seal != MagicTable.Seal.Order && modus != MagicTable.Modus.Filter)
+                return false;
+            
+            result = (Element)api.getCustomItem("magicdetoxelement");
+        }
+        else if(InventoryHelper.is(api, items.getContents(), ingredient_magic, ingredient_water, ingredient_shield, ingredient_inversion, ingredient_reactive_emerald, ingredient_reactive_lapis))
+        {
+            if(seal != MagicTable.Seal.Order && modus != MagicTable.Modus.Open)
+                return false;
+            
+            result = (Element)api.getCustomItem("magicdisarmelement");
+        }
+      
         
         if(result != null)
         {

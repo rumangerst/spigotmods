@@ -162,7 +162,7 @@ public class StreamManager
          */
         for (int i = 0; i < available_songs.size(); ++i)
         {
-            double t = (double) i / available_songs.size();
+            double t = (double) (i + 1)  / available_songs.size();
 
             if (DynamicMusicPlugin.RANDOM.nextDouble() > t)
             {

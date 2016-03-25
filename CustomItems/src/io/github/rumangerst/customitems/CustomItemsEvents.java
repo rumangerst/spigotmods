@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 import io.github.rumangerst.customitems.recipes.impl.CustomItemRecipeImpl;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -60,6 +61,9 @@ public class CustomItemsEvents implements Listener
         
         // Vanilla override
         api.applyOverrideItem(event.getItem().getItemStack());
+        
+        // Stack size override
+        api.applyStackSizeRestriction(event.getItem().getItemStack(), event.getPlayer());
     }
     
     @EventHandler
@@ -70,6 +74,12 @@ public class CustomItemsEvents implements Listener
         
         // Vanilla override
         api.applyOverrideItem(event.getCurrentItem());
+        
+        if(event.getWhoClicked() instanceof Player)
+        {        
+            // Stack size override
+            api.applyStackSizeRestriction(event.getCurrentItem(), (Player)event.getWhoClicked());
+        }
     }
     
     @EventHandler
@@ -82,6 +92,9 @@ public class CustomItemsEvents implements Listener
         {
             // Vanilla override
             api.applyOverrideItem(event.getItem());
+            
+            // Stack size override
+            api.applyStackSizeRestriction(event.getItem(), event.getPlayer());
         }
     }
 }

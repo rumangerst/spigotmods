@@ -5,6 +5,7 @@
  */
 package io.github.rumangerst.customitems;
 
+import io.github.rumangerst.customitems.helpers.InventoryHelper;
 import io.github.rumangerst.customitems.nbt.NBTAPI;
 import io.github.rumangerst.customitems.recipes.CustomItemRecipe;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import io.github.rumangerst.customitems.recipes.impl.CustomItemRecipeImpl;
 import java.util.Collection;
 import java.util.Set;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -290,6 +292,21 @@ public class CustomItemsAPI
                     item_overrides.get(stack.getType()).transform(stack);
                 }
             }
+        }
+    }
+    
+    /**
+     * Reduces stack to maximum stack size and drops all other items.
+     * @param stack 
+     * @param handler 
+     */
+    public void applyStackSizeRestriction(ItemStack stack, Player handler)
+    {
+        CustomItem item = getCustomItem(stack);
+        
+        if(item != null)
+        {
+            InventoryHelper.makeAmount(handler, stack, item.getStackSize());
         }
     }
     

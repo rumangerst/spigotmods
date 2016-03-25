@@ -23,26 +23,45 @@ public class CustomItem implements Listener
     protected byte data;    
     protected String name;
     protected String[] lore = new String[0];
+    protected int stack_size;
     
-    public CustomItem(String id, Material type, byte data, String name)
+    public CustomItem(String id, Material type, byte data, int stack_size, String name)
     {
         if(id.isEmpty() || id.contains(" "))
             throw new IllegalArgumentException("Illegal ID for custom item!");
+        if(stack_size < 1)
+            throw new IllegalArgumentException("Invalid stack size");
         
         this.id = id;
         this.type = type;
         this.data = data;
         this.name = name;
+        this.stack_size = stack_size;
+    }
+    
+    public CustomItem(String id, Material type, MaterialData data, int stack_size, String name)
+    {
+        this(id, type, data.getData(), stack_size, name);
+    }
+    
+    public CustomItem(String id, Material type, int stack_size, String name)
+    {
+        this(id, type, (byte)0, stack_size, name);
+    }
+    
+    public CustomItem(String id, Material type, byte data, String name)
+    {
+        this(id, type, data, 64, name);
     }
     
     public CustomItem(String id, Material type, MaterialData data, String name)
     {
-        this(id, type, data.getData(), name);
+        this(id, type, data.getData(), 64, name);
     }
     
     public CustomItem(String id, Material type, String name)
     {
-        this(id, type, (byte)0, name);
+        this(id, type, (byte)0, 64, name);
     }
     
     public String getId()
@@ -63,6 +82,11 @@ public class CustomItem implements Listener
     public String getName()
     {
         return name;
+    }
+    
+    public int getStackSize()
+    {
+        return stack_size;
     }
     
     public String[] getLore()

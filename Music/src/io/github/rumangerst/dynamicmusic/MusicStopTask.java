@@ -38,16 +38,12 @@ public class MusicStopTask extends BukkitRunnable
         {
             if (--iterations >= 0)
             {
-                DynamicMusicPlugin.LOGGER.info("Stop task play sound " + iterations);
+                //DynamicMusicPlugin.LOGGER.info("Stop task play sound " + iterations);
                 player.playSound(player.getLocation(), music, volume, 1.0f);
             }
             else
             {
-                finished = true;
-                
-                //Update music now
-                plugin.musicManager.run();
-                
+                finished = true;                
                 cancel();
             }
         }

@@ -56,6 +56,8 @@ public class DynamicMusicPlugin extends JavaPlugin
         conf.addDefault("StoppingMusic.SoundVolume", 0.1f);
         conf.addDefault("StoppingMusic.Iterations", 4);
         
+        conf.addDefault("UpdateTicks", 2 * 20);
+        
         conf.options().copyDefaults(true);
     }
     
@@ -224,7 +226,9 @@ public class DynamicMusicPlugin extends JavaPlugin
         getCommand("music").setExecutor(new MusicCommand(this));
         
         getServer().getPluginManager().registerEvents(musicManager, this);
-        getServer().getScheduler().runTaskTimer(this, musicManager, 5 * 20, 5 * 20);
+        getServer().getScheduler().runTaskTimer(this, musicManager, 5 * 20, getConfig().getInt("UpdateTicks"));
+        
+        LOGGER.info("Updating every " + getConfig().getInt("UpdateTicks") + " ticks");
     }
     
     @Override

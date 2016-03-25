@@ -20,7 +20,7 @@ import org.bukkit.entity.Player;
 public class Style implements ConfigurationSerializable
 {
     private String name;
-    private List<String> songs = new ArrayList<>();
+    private List<List<String>> songs = new ArrayList<>();
     private Expr conditions = null;
     
     private HashMap<Character, Condition> condition_map = new HashMap<>();
@@ -55,7 +55,7 @@ public class Style implements ConfigurationSerializable
         }
         
         List<List<String>> buckets = new ArrayList<>((List<List<String>>)serialized.get("songs"));
-        this.songs = buckets.get(0);
+        this.songs = buckets;
     }
     
     private Expr parseConditionTerm(String input)
@@ -193,11 +193,11 @@ public class Style implements ConfigurationSerializable
         }*/
     }
     
-    public List<Song> getSongInstances(DynamicMusicAPI api)
+    public List<Song> getSongInstances(DynamicMusicAPI api, int bucket)
     {
         ArrayList<Song> songs = new ArrayList<>();
         
-        for(String s : this.songs)
+        for(String s : this.songs.get(bucket))
         {
             Song song = api.getSongFromId(s);
             
@@ -211,9 +211,14 @@ public class Style implements ConfigurationSerializable
         return songs;
     }
     
-    public List<String> getSongs()
+    public List<String> getSongs(int bucket)
     {
-        return songs;
+        return songs.get(bucket);
+    }
+    
+    public int getSongBucketCount()
+    {
+        return songs.size();
     }
     
     public String getName()

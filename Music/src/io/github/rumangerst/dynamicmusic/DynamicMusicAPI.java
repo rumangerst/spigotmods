@@ -73,6 +73,8 @@ public class DynamicMusicAPI
             styles.add(priority, style);
         style_map.put(style.getName(), style);
         
+        plugin.musicManager.updateActiveStreamCount();
+        
         DynamicMusicPlugin.LOGGER.info("Registering style " + style.getName() + " at priority " + styles.indexOf(style));
     }
     

@@ -7,6 +7,7 @@ package io.github.rumangerst.dynamicmusic;
 
 import io.github.rumangerst.dynamicmusic.conditions.BiomeCondition;
 import io.github.rumangerst.dynamicmusic.conditions.HeightCondition;
+import io.github.rumangerst.dynamicmusic.conditions.RainCondition;
 import io.github.rumangerst.dynamicmusic.conditions.TimeCondition;
 import io.github.rumangerst.dynamicmusic.conditions.WorldCondition;
 import java.io.File;
@@ -57,6 +58,7 @@ public class DynamicMusicPlugin extends JavaPlugin
         conf.addDefault("StoppingMusic.Iterations", 4);
         
         conf.addDefault("UpdateTicks", 2 * 20);
+        conf.addDefault("GenerateHelp", true);
         
         conf.options().copyDefaults(true);
     }
@@ -215,6 +217,7 @@ public class DynamicMusicPlugin extends JavaPlugin
         api.registerConditionType(WorldCondition.class, "DynamicMusicWorldCondition");
         api.registerConditionType(HeightCondition.class, "DynamicMusicHeightCondition");
         api.registerConditionType(TimeCondition.class, "DynamicMusicTimeCondition");
+        api.registerConditionType(RainCondition.class, "DynamicMusicRainCondition");
         
         addMusicConfigurationDefaults();
         addPluginConfigurationDefaults();
@@ -229,6 +232,11 @@ public class DynamicMusicPlugin extends JavaPlugin
         getServer().getScheduler().runTaskTimer(this, musicManager, 5 * 20, getConfig().getInt("UpdateTicks"));
         
         LOGGER.info("Updating every " + getConfig().getInt("UpdateTicks") + " ticks");
+        
+        if(getConfig().getBoolean("GenerateHelp"))
+        {
+            api.createHelpFile(new File("plugins/DynamicMusic/README.txt"));
+        }
     }
     
     @Override

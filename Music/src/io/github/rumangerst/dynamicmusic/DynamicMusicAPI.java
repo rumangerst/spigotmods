@@ -6,13 +6,23 @@
 package io.github.rumangerst.dynamicmusic;
 
 import io.github.rumangerst.dynamicmusic.conditions.BiomeCondition;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 import org.bukkit.Sound;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
+import org.yaml.snakeyaml.reader.StreamReader;
 
 /**
  *
@@ -24,6 +34,7 @@ public class DynamicMusicAPI
     HashMap<String, Song> songs = new HashMap<>();
     ArrayList<Style> styles = new ArrayList<>();
     private HashMap<String, Style> style_map = new HashMap<>();
+    private HashMap<String, Class> condition_types = new HashMap<>();
     //private HashMap<String, Condition> conditions = new HashMap<>();    
     
     public DynamicMusicAPI(DynamicMusicPlugin plugin)
@@ -94,9 +105,49 @@ public class DynamicMusicAPI
         return null;
     }
     
+    public void createHelpFile(File target)
+    {
+        ClassLoader CLDR = this.getClass().getClassLoader();
+        InputStream input = CLDR.getResourceAsStream("README.txt");
+        
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) 
+        {
+            String content = buffer.lines().collect(Collectors.joining("\n"));
+            
+            content += "\n";
+            
+            for(String alias : condition_types.keySet())
+            {
+                content += ">>>> " + alias + "\n\n";
+                
+                Class c = condition_types.get(alias);
+                
+                try
+                {
+                    Method meth = c.getMethod("documentation");                    
+                    String doc = (String)meth.invoke(null);
+                    
+                    content += doc + "\n\n";
+                }
+                catch(Exception e)
+                {
+                    content += "No documentation found.\n\n";
+                }
+            }
+            
+            Files.write(target.toPath(), content.getBytes());
+        }
+        catch(Exception e)
+        {
+            DynamicMusicPlugin.LOGGER.log(Level.SEVERE, "", e);
+        }
+    }
+    
     public <T extends ConfigurationSerializable> void registerConditionType(Class<T> cl, String alias)
     {
         DynamicMusicPlugin.LOGGER.info("Registering condition type " + cl.getCanonicalName() + " as " + alias);
         ConfigurationSerialization.registerClass(cl, alias);
+        
+        condition_types.put(alias, cl);
     }
 }

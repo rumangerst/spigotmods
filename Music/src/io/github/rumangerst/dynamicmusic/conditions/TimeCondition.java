@@ -45,4 +45,13 @@ public class TimeCondition extends Condition
         
         return serialized;
     }
+    
+    public static String documentation()
+    {
+        return "Applies if the world's time is between given period.\n\n"
+                + "=Parameters=\n"
+                + "from: 0-24000\n"
+                + "to: 0-24000\n\n"
+                + "Note that you can invert conditions with NOT(X) operation";
+    }
 }

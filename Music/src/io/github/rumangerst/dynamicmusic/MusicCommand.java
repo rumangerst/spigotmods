@@ -73,6 +73,11 @@ public class MusicCommand implements CommandExecutor
                     
                     if(cs.isOp())
                     {
+                        for(Player player : plugin.getServer().getOnlinePlayers())
+                        {
+                            plugin.musicManager.stop(player);
+                        }
+                        
                         plugin.loadPluginConfiguration();
                         plugin.loadMusicConfiguration();
                         cs.sendMessage("Music configuration reloaded.");

@@ -30,7 +30,7 @@ public class BiomeCondition extends Condition
         
         for(String b : biomenames)
         {
-            Biome biome = Biome.valueOf(b);
+            Biome biome = Biome.valueOf(b.toUpperCase());
             biomes.add(biome);
         }
     }
@@ -57,4 +57,10 @@ public class BiomeCondition extends Condition
         return serialized;
     }
     
+    public static String documentation()
+    {
+        return "Applies if player is in one of given biomes.\n\n"
+                + "=Parameters=\n"
+                + "biomes: List of biome names";
+    }
 }

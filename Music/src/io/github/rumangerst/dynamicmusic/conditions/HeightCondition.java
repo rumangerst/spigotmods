@@ -85,4 +85,11 @@ public class HeightCondition extends Condition
         return serialized;
     }
     
+    public static String documentation()
+    {
+        return "Applies if player is at/heigher than/lower than given height.\n\n"
+                + "=Parameters=\n"
+                + "height: Either <X, >X or =X";
+    }
+    
 }

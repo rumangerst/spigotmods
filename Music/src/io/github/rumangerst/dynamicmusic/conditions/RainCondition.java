@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -18,39 +19,35 @@ import org.bukkit.entity.Player;
  *
  * @author ruman
  */
-public class WorldCondition extends Condition
+public class RainCondition extends Condition
 {
-    private ArrayList<String> worlds = new ArrayList<>();
 
-    public WorldCondition(Map<String, Object> serialized)
+    public RainCondition(Map<String, Object> serialized)
     {
         super(serialized);
-        
-        List<String> worldnames = (List<String>)serialized.get("worlds");        
-        worlds = new ArrayList<>(worldnames);
     }
 
     @Override
     public boolean applies(Player player)
     {
-        return worlds.contains(player.getLocation().getWorld().getName());
+        World w = player.getWorld();
+        
+        return w.hasStorm();
     }
 
 
     @Override
     public Map<String, Object> serialize()
     {
-        HashMap<String, Object> serialized = new HashMap<>();
-        
-        serialized.put("worlds", worlds);
+        HashMap<String, Object> serialized = new HashMap<>();        
         return serialized;
     }
     
     public static String documentation()
     {
-        return "Applies if player is in one of given worlds.\n\n"
+        return "Applies if it rains in player's world.\n\n"
                 + "=Parameters=\n"
-                + "worlds: List of world names";
+                + "No parameters";
     }
     
 }

@@ -34,6 +34,7 @@ public class DynamicMusicPlugin extends JavaPlugin
     
     public DynamicMusicAPI api;
     public MusicManager musicManager;
+    public MusicStyleUpdater styleUpdater;
     
     public FileConfiguration preferencesConfiguration;
     public FileConfiguration musicConfiguration;
@@ -52,7 +53,8 @@ public class DynamicMusicPlugin extends JavaPlugin
         conf.addDefault("StoppingMusic.SoundVolume", 0.1f);
         conf.addDefault("StoppingMusic.Iterations", 4);
         
-        conf.addDefault("UpdateTicks", 2 * 20);
+        conf.addDefault("UpdateStyleTicks", 2 * 20);
+        conf.addDefault("UpdateQueueTicks", 5);
         conf.addDefault("GenerateHelp", true);
         
         conf.options().copyDefaults(true);
@@ -201,6 +203,7 @@ public class DynamicMusicPlugin extends JavaPlugin
     {
         api = new DynamicMusicAPI(this);
         musicManager = new MusicManager(this);
+        styleUpdater = new MusicStyleUpdater(this);
         
         preferencesConfiguration = new YamlConfiguration();
         musicConfiguration = new YamlConfiguration();
@@ -224,9 +227,10 @@ public class DynamicMusicPlugin extends JavaPlugin
         getCommand("music").setExecutor(new MusicCommand(this));
         
         getServer().getPluginManager().registerEvents(musicManager, this);
-        getServer().getScheduler().runTaskTimer(this, musicManager, 5 * 20, getConfig().getInt("UpdateTicks"));
+        getServer().getScheduler().runTaskTimer(this, musicManager, 5 * 20, getConfig().getInt("UpdateQueueTicks"));
+        getServer().getScheduler().runTaskTimer(this, styleUpdater, 5 * 20, getConfig().getInt("UpdateStyleTicks"));
         
-        LOGGER.info("Updating every " + getConfig().getInt("UpdateTicks") + " ticks");
+        LOGGER.info("Updating Style every " + getConfig().getInt("UpdateStyleTicks") + " ticks");
         
         if(getConfig().getBoolean("GenerateHelp"))
         {

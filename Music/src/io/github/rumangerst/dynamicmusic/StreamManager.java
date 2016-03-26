@@ -17,15 +17,16 @@ import org.bukkit.entity.Player;
 public class StreamManager
 {
     private DynamicMusicPlugin plugin;
+    private Player player;
     private int stream_id;
-    private HashMap<Player, MusicInstance> currentMusic = new HashMap<>();
-    private HashMap<Player, Style> currentStyle = new HashMap<>();
+    MusicInstance currentMusic = null;
+    ArrayList<Song> already_played_songs = new ArrayList<>();
+    private Style currentStyle = null;
     
-    private HashMap<Player, ArrayList<Song>> already_played_songs = new HashMap<>();
-    
-    public StreamManager(DynamicMusicPlugin plugin, int stream_id)
+    public StreamManager(DynamicMusicPlugin plugin, Player player, int stream_id)
     {
         this.plugin = plugin;
+        this.player = player;
         this.stream_id = stream_id;
     }
     
@@ -44,20 +45,24 @@ public class StreamManager
         return false;
     }*/
     
-    public Style selectMatchingStyle(Player player)
+    
+    
+    public boolean isPlaying()
     {
-        Style matching_style = null;
-        
-        for(Style style : plugin.api.styles)
-        {
-            if(style.applies(player))
-            {
-                matching_style = style;
-                break;
-            }
-        }
-        
-        return matching_style;
+        if(currentMusic != null)
+            return !currentMusic.isFinished();
+        else
+            return false;
+    }
+    
+    public void switchStyle(Style style)
+    {
+        currentStyle = style;
+    }
+    
+    public void informStopped()
+    {
+        currentMusic = null;
     }
     
     /**
@@ -65,72 +70,51 @@ public class StreamManager
      * Will only play next song if already playing song can be stopped.
      * @param player 
      */
-    public void tryPlayNextSong(Player player)
-    {
-        if(!plugin.preferencesConfiguration.getBoolean(player.getUniqueId().toString() + ".enable_music", true))
-            return;
+    public void update()
+    {        
+        //DynamicMusicPlugin.LOGGER.info(">> Begin update music " + player + " sid " + stream_id);
+                
+        //DynamicMusicPlugin.LOGGER.info(">>> style " + currentStyle);
+        //DynamicMusicPlugin.LOGGER.info(">>> m " + currentMusic);
         
-        MusicInstance music = currentMusic.getOrDefault(player, null);
-        boolean can_stop = plugin.musicManager.canStop();
-        
-        // Only look for a new style if we can stop
-        Style style = can_stop ? currentStyle.getOrDefault(player, null) : null;
-        Style newstyle = can_stop ? selectMatchingStyle(player) : null;
-        
-        if(can_stop)
-        {
-            if(style != null && style != newstyle)
-            {
-                if(music != null)
-                {
-                    //music.sendStop();
-                    plugin.musicManager.stop(player);
-                    return;
-                }
-            }
-        }
+        //if(currentMusic != null)
+        //{
+        //    DynamicMusicPlugin.LOGGER.info(">>> mf " + currentMusic.isFinished());
+        //    DynamicMusicPlugin.LOGGER.info(">>> ms " + currentMusic.getSong().getName());
+        //}
             
         // If no music is playing or the style changed
-        if(music == null || music.isFinished())
+        if(currentStyle != null && (currentMusic == null || currentMusic.isFinished()))
         {
-            //If styles have not been selected, select them now
-            if(!can_stop)
-            {
-                newstyle = selectMatchingStyle(player);
-            }            
-           
-            Song newsong = selectNextSong(player, newstyle);
+            Song newsong = selectNextSong(currentStyle);
             
             if(newsong == null)
             {
-                currentMusic.put(player, null);
-                currentStyle.put(player, null);
+                currentMusic = null;
+                //DynamicMusicPlugin.LOGGER.info("<< End update music null");
                 return;
             }
             
             // Introduce song now
-            currentMusic.put(player, new MusicInstance(plugin, newsong, player));
-            currentStyle.put(player, newstyle);
+            MusicInstance m = new MusicInstance(plugin, newsong, player);            
+            currentMusic = m;
+           
+            already_played_songs.remove(newsong);
+            already_played_songs.add(newsong);
             
-            if(!already_played_songs.containsKey(player))
-                already_played_songs.put(player, new ArrayList<>());
+            // Activate the instance
+            plugin.musicManager.enqueue(player, m);
             
-            ArrayList<Song> played = already_played_songs.get(player);
-            played.add(newsong);
+            //DynamicMusicPlugin.LOGGER.info("<< End update music eq sid " + stream_id);
         }
     }
     
-    public Song selectNextSong(Player player, Style matching_style)
+    public Song selectNextSong(Style matching_style)
     {
         //Style must support bucket count
         if(matching_style == null || matching_style.getSongBucketCount() <= stream_id)
             return null;
-        
-        if(!already_played_songs.containsKey(player))
-            already_played_songs.put(player, new ArrayList<>());
-
-        ArrayList<Song> played = already_played_songs.get(player);
-
+       
         List<Song> available_songs = matching_style.getSongInstances(plugin.api, stream_id);
 
         if (available_songs.isEmpty())
@@ -145,7 +129,7 @@ public class StreamManager
          */
         for (Song s : available_songs)
         {
-            if (!played.contains(s))
+            if (!already_played_songs.contains(s))
             {
                 best_songs.add(s);
             }
@@ -176,29 +160,11 @@ public class StreamManager
         return available_songs.get(DynamicMusicPlugin.RANDOM.nextInt(available_songs.size()));
     }
     
-    public void update(Player player)
+    public Song getCurrentSong()
     {
-        tryPlayNextSong(player);
-    }
-    
-    public void removePlayer(Player player)
-    {
-        currentMusic.remove(player);
-        currentStyle.remove(player);
-    }
-    
-    public Song getCurrentSong(Player player)
-    {
-        MusicInstance inst = currentMusic.getOrDefault(player, null);
-        
-        if(inst != null)
-            return inst.getSong();
+        if(currentMusic != null)
+            return currentMusic.getSong();
         return null;
-    }
-    
-    public Style getCurrentStyle(Player player)
-    {
-        return currentStyle.getOrDefault(player, null);
     }
     
     public int getStreamId()

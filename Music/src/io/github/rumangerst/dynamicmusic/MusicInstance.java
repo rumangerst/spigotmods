@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
  *
  * @author ruman
  */
-public class MusicInstance
+public class MusicInstance implements Runnable
 {
     
     private DynamicMusicPlugin plugin;
@@ -25,8 +25,7 @@ public class MusicInstance
         this.plugin = plugin;
         this.player = player;
         this.song = song;
-        this.timeout = System.currentTimeMillis() + song.getLength();
-        song.play(player);
+        this.timeout = Long.MAX_VALUE;        
     }
 
     public Song getSong()
@@ -53,6 +52,13 @@ public class MusicInstance
         return stop_task.finished();
         }*/
         return System.currentTimeMillis() > timeout;
+    }
+
+    @Override
+    public void run()
+    {
+        this.timeout = System.currentTimeMillis() + song.getLength();
+        song.play(player);
     }
     
 }

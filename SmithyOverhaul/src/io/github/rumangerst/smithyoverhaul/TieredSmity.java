@@ -110,7 +110,7 @@ public class TieredSmity implements Listener
     private boolean canDoSomething(Player player)
     {
         long current = System.currentTimeMillis();
-        long timeout = use_timeout.getOrDefault(player, current);
+        long timeout = use_timeout.getOrDefault(player, 0L);
         
         return current > timeout;
     }
@@ -657,7 +657,7 @@ public class TieredSmity implements Listener
             
             if(!canDoSomething(event.getPlayer()))
             {
-                //event.entityPlayer.addChatComponentMessage(new ChatComponentText("Du kannst dies noch nicht tun!"));
+                //event.getPlayer().sendMessage("Du kannst dies noch nicht tun!");
                 return;
             }
             

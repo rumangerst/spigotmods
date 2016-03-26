@@ -2,6 +2,7 @@ package io.github.rumangerst.smithyoverhaul;
 
 import io.github.rumangerst.customitems.CustomItemsAPI;
 import io.github.rumangerst.customitems.nbt.NBTAPI;
+import io.github.rumangerst.smithyoverhaul.items.CraftedSword;
 import io.github.rumangerst.smithyoverhaul.items.CraftedTool;
 import io.github.rumangerst.smithyoverhaul.items.UnfinishedSword;
 import io.github.rumangerst.smithyoverhaul.items.UnfinishedTool;
@@ -66,7 +67,7 @@ public class SmithyOverhaulPlugin extends JavaPlugin implements Listener
         CustomItemsAPI.api(this).registerItem(this, new CraftedTool("craftedironaxe", Material.IRON_AXE, "Geschmiedete Axt"));
         CustomItemsAPI.api(this).registerItem(this, new CraftedTool("craftedironshovel", Material.IRON_SPADE, "Geschmiedete Schaufel"));
         CustomItemsAPI.api(this).registerItem(this, new CraftedTool("craftedironhoe", Material.IRON_HOE, "Geschmiedete Hacke"));
-        //CustomItemsAPI.api(this).registerItem(this, new CraftedSword("craftedironsword", Material.IRON_SWORD, "Geschmiedetes Schwert"));
+        CustomItemsAPI.api(this).registerItem(this, new CraftedSword("craftedironsword", Material.IRON_SWORD, "Geschmiedetes Schwert"));
         
         CustomItemsAPI.api(this).registerOverride(Material.WOOD_PICKAXE, "toywoodenpickaxe");
         CustomItemsAPI.api(this).registerOverride(Material.WOOD_AXE, "toywoodenaxe");

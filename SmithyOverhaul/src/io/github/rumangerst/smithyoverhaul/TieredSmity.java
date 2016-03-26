@@ -82,7 +82,8 @@ public class TieredSmity implements Listener
                 return tool.getId().equals("unfinishedironpickaxe") 
                         || tool.getId().equals("unfinishedironshovel")
                         || tool.getId().equals("unfinishedironaxe")
-                        || tool.getId().equals("unfinishedironhoe");
+                        || tool.getId().equals("unfinishedironhoe")
+                        || tool.getId().equals("unfinishedironsword");
             }
         }
         
@@ -483,6 +484,46 @@ public class TieredSmity implements Listener
         }
     }
     
+    private void finish_weapon_sharpness(ItemStack stack, double sharpness)
+    {
+        if (sharpness < 0.5)
+        {
+           
+        } 
+        else if (sharpness < 0.7)
+        {
+            stack.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1);
+        }       
+        else if (sharpness < 0.9)
+        {
+            stack.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 2);
+        }
+        else
+        {
+            stack.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 3);
+        }
+    }
+    
+    private void finish_weapon_precision(ItemStack stack, double precision)
+    {
+        if (precision < 0.5)
+        {
+           
+        } 
+        else if (precision < 0.7)
+        {
+            stack.addUnsafeEnchantment(Enchantment.LOOT_BONUS_MOBS, 1);
+        }       
+        else if (precision < 0.9)
+        {
+            stack.addUnsafeEnchantment(Enchantment.LOOT_BONUS_MOBS, 2);
+        }
+        else
+        {
+            stack.addUnsafeEnchantment(Enchantment.LOOT_BONUS_MOBS, 3);
+        }
+    }
+    
     private void finish(ItemStack stack, Block block, Player player, ArrayList<String> additionalinformation)
     {
         double purity = NBTAPI.getDouble(stack, "tieredsmithy/purity", 0);
@@ -533,6 +574,41 @@ public class TieredSmity implements Listener
             NBTAPI.setDouble(stack,"craftedtool/exhaustion", exhaustion);
             NBTAPI.setDouble(stack,"craftedtool/efficiency", efficiency);
             NBTAPI.setDouble(stack,"craftedtool/precision", precision);
+            
+            if(stack.getType() == Material.IRON_AXE)
+            {
+                //Axes can be used as weapon, now
+                // Precision ONLY for swords
+                double sharpness = form_fine * form_detail;
+                
+                finish_weapon_sharpness(stack, sharpness);
+                
+                NBTAPI.setDouble(stack,"craftedweapon/sharpness", sharpness);
+            }
+            
+            //Transform the tool
+            String dst_id = CustomItemsAPI.api(plugin).getCustomItem(stack).getId().replace("unfinished", "crafted");
+            CustomItemsAPI.api(plugin).getCustomItem(dst_id).transform(stack);
+        
+            additionalinformation.add(ChatColor.RED + "Du hast den Werkstück fertiggestellt!");
+        }
+        else if(stack.getType() == Material.IRON_SWORD)
+        {
+            double durability = purity * Math.pow(Math.E, -0.5 * Math.pow((hardness - 0.6) / 0.3, 2));
+            double exhaustion = 1.0 - form_rough;
+            double sharpness = form_fine * form_detail;
+            double precision = (1 - hardness) * form_detail;
+            
+            finish_durability(stack, durability);
+            finish_weapon_sharpness(stack, sharpness);
+            finish_weapon_precision(stack, precision);
+            
+             //Store the final data in the tag  
+            NBTAPI.setString(stack, "craftedweapon/manufacturer", player.getName());
+            NBTAPI.setDouble(stack,"craftedweapon/durability", durability);
+            NBTAPI.setDouble(stack,"craftedweapon/exhaustion", exhaustion);
+            NBTAPI.setDouble(stack,"craftedweapon/sharpness", sharpness);
+            NBTAPI.setDouble(stack,"craftedweapon/precision", precision);
             
             //Transform the tool
             String dst_id = CustomItemsAPI.api(plugin).getCustomItem(stack).getId().replace("unfinished", "crafted");

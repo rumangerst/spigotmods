@@ -6,18 +6,12 @@
 package io.github.rumangerst.crystalmagic.elements;
 
 import io.github.rumangerst.crystalmagic.CrystalMagicPlugin;
-import io.github.rumangerst.customitems.CustomItemsAPI;
-import org.bukkit.Effect;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
 
 /**
  *
@@ -60,22 +54,26 @@ public class DisarmElement extends Element
     {
         PlayerInventory inv = player.getInventory();
         
-        ItemStack dropped;
+        ItemStack dropped = null;
         
-        if((dropped = inv.getHelmet()) != null)
+        if(inv.getHelmet() != null && inv.getHelmet().getType() != Material.AIR)
         {
+            dropped = inv.getHelmet();
             inv.setHelmet(null);
         }
-        else if((dropped = inv.getBoots()) != null)
+        else if(inv.getBoots() != null && inv.getBoots().getType() != Material.AIR)
         {
+            dropped = inv.getBoots();
             inv.setBoots(null);
         }
-        else if((dropped = inv.getLeggings()) != null)
+        else if(inv.getLeggings()!= null && inv.getLeggings().getType() != Material.AIR)
         {
+            dropped = inv.getBoots();
             inv.setLeggings(null);
         }
-        else if((dropped = inv.getChestplate()) != null)
+        else if(inv.getChestplate()!= null && inv.getChestplate().getType() != Material.AIR)
         {
+            dropped = inv.getBoots();
             inv.setChestplate(null);
         }
         
@@ -89,14 +87,16 @@ public class DisarmElement extends Element
     {
         PlayerInventory inv = player.getInventory();
         
-        ItemStack dropped;
+        ItemStack dropped = null;
         
-        if((dropped = inv.getItemInOffHand()) != null)
+        if(inv.getItemInOffHand()!= null && inv.getItemInOffHand().getType() != Material.AIR)
         {
+            dropped = inv.getItemInOffHand();
             inv.setItemInOffHand(null);
         }
-        else if((dropped = inv.getItemInMainHand()) != null)
+        else if(inv.getItemInMainHand()!= null && inv.getItemInMainHand().getType() != Material.AIR)
         {
+            dropped = inv.getItemInMainHand();
             inv.setItemInMainHand(null);
         }
         
@@ -120,13 +120,14 @@ public class DisarmElement extends Element
             
             dropped = inv.getItem(j);
             
-            if(dropped != null)
+            if(dropped != null && dropped.getType() != Material.AIR)
             {
-                inv.setItem(j, null);
+                inv.clear(j);
+                break;
             }
         }
         
-        if(dropped != null)
+        if(dropped != null && dropped.getType() != Material.AIR)
         {
             player.getWorld().dropItemNaturally(player.getLocation(), dropped);
         }

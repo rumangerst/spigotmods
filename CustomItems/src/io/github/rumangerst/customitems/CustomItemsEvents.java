@@ -45,11 +45,10 @@ public class CustomItemsEvents implements Listener
             }
         }
         
-        // Vanilla override
-        if(api.item_overrides.containsKey(event.getRecipe().getResult().getType()))
+        ItemStack result = event.getRecipe().getResult();
+        if(api.applyOverrideItem(result))
         {
-            if(api.getCustomItem(event.getRecipe().getResult()) == null)    
-                event.getInventory().setResult(api.item_overrides.get(event.getRecipe().getResult().getType()).make(event.getRecipe().getResult().getAmount()));
+            event.getInventory().setResult(result);
         }
     }
     

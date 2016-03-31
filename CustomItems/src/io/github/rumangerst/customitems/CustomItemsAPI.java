@@ -29,10 +29,10 @@ public class CustomItemsAPI
 {
     CustomItemsPlugin plugin;
     HashMap<String, CustomItem> items = new HashMap<>();
-    HashMap<Material, CustomItem> item_overrides = new HashMap<>();
+    HashMap<AnyItem, AnyItem> item_overrides = new HashMap<>();
     ArrayList<CustomItemRecipeImpl> recipes = new ArrayList<>();
     ArrayList<CustomItemRecipe> floating_recipes = new ArrayList<>();
-    HashMap<Material, String> floating_overrides = new HashMap<>();
+    HashMap<AnyItem, AnyItem> floating_overrides = new HashMap<>();
     
     public CustomItemsAPI(CustomItemsPlugin plugin)
     {
@@ -73,16 +73,27 @@ public class CustomItemsAPI
     
     private void registerFloatingOverrides()
     {
-        for(Material key : new ArrayList<>(floating_overrides.keySet()))
+        for(AnyItem from : new ArrayList<>(floating_overrides.keySet()))
         {
-            String v = floating_overrides.get(key);            
-            CustomItem i = getCustomItem(v);
+            AnyItem to = floating_overrides.get(from);
             
-            if(i != null)
+            if(!from.isVanilla() && getCustomItem(from.getCustomItemID()) == null)
+                continue;
+            if(!to.isVanilla() && getCustomItem(to.getCustomItemID()) == null)
+                continue;
+            
+            if(item_overrides.containsKey(from))
             {
-                registerOverride(key, i);
-                floating_overrides.remove(key);
+                if(item_overrides.containsKey(from))
+                {
+                    CustomItemsPlugin.LOGGER.log(Level.WARNING, "Existing item override for {0} is overriden by {1}", new Object[]{from, to});
+                }
             }
+            
+            floating_overrides.remove(from);
+            item_overrides.put(from, to);
+            
+            CustomItemsPlugin.LOGGER.log(Level.INFO, "Overriding item {0} with {1}", new Object[]{from, to});
         }
     }
     
@@ -137,37 +148,32 @@ public class CustomItemsAPI
         plugin.getServer().getPluginManager().registerEvents(item, plugin);
     }
     
+    public void registerOverride(AnyItem from, AnyItem to)
+    {
+        floating_overrides.put(from, to);
+        registerFloatingOverrides();
+    }       
+    
     /**
-     * Overrides a vanilla item by a custom item
+     * Overrides a vanilla item by a custom item. Assumes override with material data = 0
      * @param material
      * @param item 
      */
+    @Deprecated
     public void registerOverride(Material material, CustomItem item)
     {
-        if(item_overrides.containsKey(material))
-        {
-            CustomItemsPlugin.LOGGER.log(Level.WARNING, "Existing item override for {0} is overriden by {1}", new Object[]{material, item});
-        }
-        
-        CustomItemsPlugin.LOGGER.log(Level.INFO, "Overriding item {0} with {1}", new Object[]{material, item});
-        item_overrides.put(material, item);
+        registerOverride(new AnyItem(material), new AnyItem(item.id));
     }
     
     /**
-     * Overrides a vanilla item by a custom item
+     * Overrides a vanilla item by a custom item. Assumes override with material data = 0
      * @param material
      * @param item 
      */
+    @Deprecated
     public void registerOverride(Material material, String item)
     {
-        if(items.containsKey(item))
-        {
-            registerOverride(material, getCustomItem(item));
-        }
-        else
-        {
-            floating_overrides.put(material, item);
-        }
+        registerOverride(new AnyItem(material), new AnyItem(item));
     }
         
     /**
@@ -277,22 +283,26 @@ public class CustomItemsAPI
      * Applies vanilla item override to a stack.
      * Won't happen if stack has a name
      * @param stack 
+     * @return If override happened
      */
-    public void applyOverrideItem(ItemStack stack)
+    public boolean applyOverrideItem(ItemStack stack)
     {
         if(stack == null)
-            return;
+            return false;
         
-        if(item_overrides.containsKey(stack.getType()))
+        AnyItem from = getAnyItem(stack);
+        AnyItem to = item_overrides.getOrDefault(from, null);
+        
+        if(to != null)
         {
             if(NBTAPI.getString(stack, "display/Name", "").isEmpty())
             {
-                if(getCustomItem(stack) == null)
-                {
-                    item_overrides.get(stack.getType()).transform(stack);
-                }
+                to.transform(this, stack);
+                return true;
             }
         }
+        
+        return false;
     }
     
     /**

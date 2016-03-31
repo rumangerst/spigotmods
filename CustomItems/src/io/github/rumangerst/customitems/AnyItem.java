@@ -73,6 +73,19 @@ public class AnyItem
         return vanilladata;
     }
     
+    public void transform(CustomItemsAPI api, ItemStack stack)
+    {
+        if(isVanilla())
+        {
+            stack.setType(vanillamaterial);
+            stack.setData(new MaterialData(vanillamaterial, vanilladata));
+        }
+        else
+        {
+            api.getCustomItem(customitem).transform(stack);
+        }
+    }
+    
     public ItemStack make(CustomItemsAPI api, int amount)
     {
         if(isVanilla())

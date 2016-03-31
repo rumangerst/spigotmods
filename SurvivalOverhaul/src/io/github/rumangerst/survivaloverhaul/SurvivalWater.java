@@ -6,6 +6,7 @@
 package io.github.rumangerst.survivaloverhaul;
 
 import com.connorlinfoot.bountifulapi.BountifulAPI;
+import io.github.rumangerst.customitems.AnyItem;
 import io.github.rumangerst.customitems.CustomItem;
 import io.github.rumangerst.customitems.CustomItemsAPI;
 import io.github.rumangerst.customitems.nbt.NBTAPI;
@@ -168,7 +169,7 @@ public class SurvivalWater implements Listener
         associateBiomes("refreshingwater", Biome.ICE_MOUNTAINS);
         
         defaultpotion = getPotion("bacterialwater");        
-        CustomItemsAPI.api(plugin).registerOverride(Material.POTION, "bacterialwater");
+        CustomItemsAPI.api(plugin).registerOverride(new AnyItem(Material.POTION, (byte)0), new AnyItem("bacterialwater"));
     }
     
     public SurvivalWaterPotion getPotion(String id)
